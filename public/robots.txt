@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /portfolio
+
+# Block private workspace and auth pages from search engine indexing
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /tasks
+Disallow: /journals
+Disallow: /kajian
+Disallow: /wellbeing
+
+# Sitemap Location (ganti domain saat sudah online)
+Sitemap: https://safah.dev/sitemap.xml
