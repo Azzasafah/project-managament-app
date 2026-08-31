@@ -80,6 +80,10 @@ class DashboardController extends Controller
         // Refreshing activities
         $refreshingActivities = RefreshingActivity::orderBy('last_done_date', 'desc')->get();
 
+        // Certifications & FAQs for Portfolio Management
+        $certifications = $user->certifications()->get();
+        $faqs = $user->faqs()->get();
+
         return Inertia::render('Dashboard', [
             'projects' => [
                 'todo' => $todoTasks,
@@ -97,6 +101,8 @@ class DashboardController extends Controller
             'avgSleep' => $avgSleep,
             'sleepDebt' => $sleepDebt,
             'refreshingActivities' => $refreshingActivities,
+            'certifications' => $certifications,
+            'faqs' => $faqs,
         ]);
     }
 }

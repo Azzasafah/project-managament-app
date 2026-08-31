@@ -54,4 +54,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(RefreshingActivity::class);
     }
+
+    public function certifications(): HasMany
+    {
+        return $this->hasMany(Certification::class)->orderBy('order_index');
+    }
+
+    public function faqs(): HasMany
+    {
+        return $this->hasMany(Faq::class)->orderBy('order_index');
+    }
 }

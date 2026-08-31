@@ -16,10 +16,13 @@ import KanbanBoard from '@/Components/Kanban/KanbanBoard';
 import LearningJournalView from '@/Components/Learning/LearningJournalView';
 import SpiritualView from '@/Components/Spiritual/SpiritualView';
 import WellbeingView from '@/Components/Wellbeing/WellbeingView';
+import PortfolioManagerView from '@/Components/PortfolioManager/PortfolioManagerView';
 
 // Modal Components
 import TaskModal from '@/Components/Modals/TaskModal';
 import PortfolioModal from '@/Components/Modals/PortfolioModal';
+import CertificationModal from '@/Components/Modals/CertificationModal';
+import FaqModal from '@/Components/Modals/FaqModal';
 import JournalModal from '@/Components/Modals/JournalModal';
 import ReadJournalModal from '@/Components/Modals/ReadJournalModal';
 import KajianModal from '@/Components/Modals/KajianModal';
@@ -45,6 +48,8 @@ export default function Dashboard({
     avgSleep = 6.5,
     sleepDebt = -7.0,
     refreshingActivities = [],
+    certifications = [],
+    faqs = [],
 }) {
     const { auth } = usePage().props;
     const user = auth?.user || { name: 'Admin User', email: 'admin@personalhub.test' };
@@ -99,6 +104,16 @@ export default function Dashboard({
         form: { is_portfolio: true, portfolio_summary: '', tech_stack: '', github_url: '', live_url: '' },
     });
 
+    const [certificationModal, setCertificationModal] = useState({
+        open: false,
+        cert: null,
+    });
+
+    const [faqModal, setFaqModal] = useState({
+        open: false,
+        faq: null,
+    });
+
     const [journalModal, setJournalModal] = useState({
         open: false,
         isEdit: false,
@@ -133,7 +148,7 @@ export default function Dashboard({
     // Confirm Delete Modal State
     const [deleteModal, setDeleteModal] = useState({
         open: false,
-        type: 'task', // 'task' | 'journal' | 'kajian' | 'refreshing'
+        type: 'task', // 'task' | 'journal' | 'kajian' | 'refreshing' | 'cert' | 'faq'
         id: null,
         itemName: '',
         title: 'Hapus Item Ini?',
@@ -144,6 +159,7 @@ export default function Dashboard({
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', labelMobile: 'Home', icon: 'ph-bold ph-squares-four' },
         { id: 'projects', label: 'Projects & Kanban', labelMobile: 'Tasks', icon: 'ph-bold ph-kanban' },
+        { id: 'portfolio_manager', label: 'Portfolio Content', labelMobile: 'Porto', icon: 'ph-bold ph-certificate' },
         { id: 'learning', label: 'Learning Journal', labelMobile: 'Learn', icon: 'ph-bold ph-notebook' },
         { id: 'spiritual', label: 'Spiritual & Kajian', labelMobile: 'Spirit', icon: 'ph-bold ph-mosque' },
         { id: 'wellbeing', label: 'Wellbeing & Balance', labelMobile: 'Health', icon: 'ph-bold ph-heartbeat' },
@@ -196,7 +212,12 @@ export default function Dashboard({
 
     // Quick Add trigger
     const handleQuickAdd = () => {
-        if (currentTab === 'learning') {
+        if (currentTab === 'portfolio_manager') {
+            setCertificationModal({
+                open: true,
+                cert: null,
+            });
+        } else if (currentTab === 'learning') {
             setJournalModal({
                 open: true,
                 isEdit: false,
@@ -377,6 +398,29 @@ export default function Dashboard({
         });
     };
 
+    // Cert & FAQ Handlers
+    const confirmDeleteCert = (cert) => {
+        setDeleteModal({
+            open: true,
+            type: 'cert',
+            id: cert.id,
+            itemName: cert.title || 'Kredensial ini',
+            title: 'Hapus Kredensial Sertifikasi?',
+            isDeleting: false,
+        });
+    };
+
+    const confirmDeleteFaq = (faq) => {
+        setDeleteModal({
+            open: true,
+            type: 'faq',
+            id: faq.id,
+            itemName: faq.question || 'Pertanyaan FAQ ini',
+            title: 'Hapus Pertanyaan FAQ?',
+            isDeleting: false,
+        });
+    };
+
     // Execute Delete Confirmation
     const handleExecuteDelete = () => {
         setDeleteModal((prev) => ({ ...prev, isDeleting: true }));
@@ -386,6 +430,8 @@ export default function Dashboard({
             journal: `/journals/${deleteModal.id}`,
             kajian: `/kajian/${deleteModal.id}`,
             refreshing: `/wellbeing/refreshing/${deleteModal.id}`,
+            cert: `/certifications/${deleteModal.id}`,
+            faq: `/faqs/${deleteModal.id}`,
         };
 
         const successMsgMap = {
@@ -393,6 +439,8 @@ export default function Dashboard({
             journal: 'Jurnal belajar berhasil dihapus.',
             kajian: 'Data kajian berhasil dihapus.',
             refreshing: 'Aktivitas refreshing berhasil dihapus.',
+            cert: 'Kredensial sertifikasi berhasil dihapus.',
+            faq: 'FAQ berhasil dihapus.',
         };
 
         router.delete(urlMap[deleteModal.type], {
@@ -496,6 +544,20 @@ export default function Dashboard({
                                     },
                                 })
                             }
+                        />
+                    )}
+
+                    {/* TAB: PORTFOLIO CONTENT CMS */}
+                    {currentTab === 'portfolio_manager' && (
+                        <PortfolioManagerView
+                            certifications={certifications}
+                            faqs={faqs}
+                            onAddCert={() => setCertificationModal({ open: true, cert: null })}
+                            onEditCert={(cert) => setCertificationModal({ open: true, cert })}
+                            onDeleteCert={confirmDeleteCert}
+                            onAddFaq={() => setFaqModal({ open: true, faq: null })}
+                            onEditFaq={(faq) => setFaqModal({ open: true, faq })}
+                            onDeleteFaq={confirmDeleteFaq}
                         />
                     )}
 
@@ -640,6 +702,18 @@ export default function Dashboard({
                 setForm={(form) => setRefreshingModal((prev) => ({ ...prev, form }))}
                 onClose={() => setRefreshingModal((prev) => ({ ...prev, open: false }))}
                 onSubmit={saveRefreshing}
+            />
+
+            <CertificationModal
+                isOpen={certificationModal.open}
+                certification={certificationModal.cert}
+                onClose={() => setCertificationModal({ open: false, cert: null })}
+            />
+
+            <FaqModal
+                isOpen={faqModal.open}
+                faq={faqModal.faq}
+                onClose={() => setFaqModal({ open: false, faq: null })}
             />
 
             {/* Custom Confirm Delete Modal */}

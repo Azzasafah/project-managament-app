@@ -254,5 +254,109 @@ class DatabaseSeeder extends Seeder
         foreach ($activities as $act) {
             $user->refreshingActivities()->create($act);
         }
+
+        // 7. Certifications (Official & Internship)
+        $certifications = [
+            [
+                'title' => 'AWS Certified Cloud Practitioner (CLF-C02)',
+                'issuer' => 'Amazon Web Services (AWS)',
+                'type' => 'official',
+                'issue_date' => 'Jan 2026',
+                'credential_id' => 'AWS-CCP-982147',
+                'credential_url' => 'https://aws.amazon.com/verification',
+                'skills' => ['AWS Cloud', 'IAM', 'S3', 'EC2', 'VPC', 'Security'],
+                'description' => 'Validasi menyeluruh atas arsitektur cloud, keamanan data, kepatuhan infrastruktur, dan model penetapan harga AWS.',
+                'order_index' => 0,
+                'is_active' => true,
+            ],
+            [
+                'title' => 'Data Engineering with Apache Spark & Python',
+                'issuer' => 'Coursera / Databricks Partner',
+                'type' => 'official',
+                'issue_date' => 'Sep 2025',
+                'credential_id' => 'DBX-SPK-33410',
+                'credential_url' => 'https://coursera.org/verify/DBX-SPK-33410',
+                'skills' => ['Apache Spark', 'PySpark', 'Delta Lake', 'ETL Optimization', 'Parquet'],
+                'description' => 'Spesialisasi pemrosesan dataset terdistribusi batch & streaming dengan PySpark dan arsitektur Modern Lakehouse.',
+                'order_index' => 1,
+                'is_active' => true,
+            ],
+            [
+                'title' => 'Belajar Membangun Arsitektur Cloud & Data Pipeline',
+                'issuer' => 'Dicoding Indonesia',
+                'type' => 'official',
+                'issue_date' => 'Nov 2025',
+                'credential_id' => 'DCD-ARC-78190',
+                'credential_url' => 'https://www.dicoding.com/certificates/DCD-ARC-78190',
+                'skills' => ['Data Pipeline', 'Cloud Architecture', 'Docker', 'REST API', 'Database Indexing'],
+                'description' => 'Sertifikasi keahlian merancang arsitektur aplikasi berskala besar, orkestrasi container, dan optimalisasi pipeline data.',
+                'order_index' => 2,
+                'is_active' => true,
+            ],
+            [
+                'title' => 'Data Engineering & Cloud Infrastructure Intern',
+                'issuer' => 'Tech Inovasi Nusantara (Magang Industri)',
+                'type' => 'internship',
+                'issue_date' => 'Jul 2025 - Des 2025',
+                'credential_id' => 'INT-DE-2025-089',
+                'credential_url' => 'https://github.com/Azzasafah',
+                'skills' => ['Airflow DAGs', 'PySpark', 'PostgreSQL', 'Terraform', 'CI/CD'],
+                'description' => 'Bertanggung jawab merancang dan mengotomasi 5+ pipeline batch harian memproses data transaksi, serta mengelola deployment infrastruktur cloud menggunakan Terraform.',
+                'order_index' => 3,
+                'is_active' => true,
+            ],
+            [
+                'title' => 'Cloud & Backend Developer Apprentice',
+                'issuer' => 'Program MSIB Kampus Merdeka Batch 6',
+                'type' => 'internship',
+                'issue_date' => 'Feb 2025 - Jun 2025',
+                'credential_id' => 'MSIB-KM-67104',
+                'credential_url' => 'https://kampusmerdeka.kemdikbud.go.id/',
+                'skills' => ['Laravel', 'REST API', 'Docker', 'AWS EC2', 'PostgreSQL'],
+                'description' => 'Pengembangan microservices backend, implementasi middleware autentikasi aman, dan manajemen container deployment di cloud VPS.',
+                'order_index' => 4,
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($certifications as $cert) {
+            $user->certifications()->create($cert);
+        }
+
+        // 8. FAQs (Frequently Asked Questions)
+        $faqs = [
+            [
+                'question' => 'Apa fokus utama keahlian teknis Anda saat ini?',
+                'answer' => 'Fokus utama saya adalah Data Engineering (ETL/ELT pipeline, PySpark, Apache Airflow, Delta Lake, PostgreSQL) dan Cloud Infrastructure (AWS & Terraform IaC), serta orchestrasi backend menggunakan ekosistem modern Laravel dan React.',
+                'category' => 'Data Engineering',
+                'order_index' => 0,
+                'is_active' => true,
+            ],
+            [
+                'question' => 'Apakah Anda terbuka untuk kesempatan kerja (Open to Work / Freelance / Full-time)?',
+                'answer' => 'Ya, tentu! Saya sangat terbuka untuk peluang kerja Full-time, Remote, Kontrak, maupun proyek Freelance di bidang Data Engineering, Cloud Infrastructure, ataupun Full-Stack Web Development.',
+                'category' => 'General',
+                'order_index' => 1,
+                'is_active' => true,
+            ],
+            [
+                'question' => 'Bagaimana pendekatan Anda dalam membangun pipeline data yang handal?',
+                'answer' => 'Saya mengedepankan prinsip Idempotency, validasi integritas skema data (schema enforcement), logging komprehensif, pemantauan kegagalan otomatis melalui Airflow alerts, serta isolasi lingkungan berbasis Docker.',
+                'category' => 'Technical',
+                'order_index' => 2,
+                'is_active' => true,
+            ],
+            [
+                'question' => 'Bagaimana cara tercepat untuk menghubungi dan berkolaborasi dengan Anda?',
+                'answer' => 'Anda bisa langsung menghubungi saya melalui email di muhammad.hafizh2016@gmail.com, mengirimkan pesan via profil GitHub @Azzasafah, atau memanfaatkan tombol kontak instan di portofolio ini.',
+                'category' => 'Work Collaboration',
+                'order_index' => 3,
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($faqs as $faq) {
+            $user->faqs()->create($faq);
+        }
     }
 }

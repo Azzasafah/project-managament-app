@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CertificationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\KajianController;
 use App\Http\Controllers\LearningJournalController;
 use App\Http\Controllers\PortfolioController;
@@ -49,6 +51,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/wellbeing/refreshing', [WellbeingController::class, 'storeRefreshing'])->name('wellbeing.refreshing.store');
     Route::post('/wellbeing/refreshing/{refreshingActivity}/done', [WellbeingController::class, 'markRefreshingDone'])->name('wellbeing.refreshing.done');
     Route::delete('/wellbeing/refreshing/{refreshingActivity}', [WellbeingController::class, 'destroyRefreshing'])->name('wellbeing.refreshing.destroy');
+
+    // Certifications Management Routes
+    Route::post('/certifications', [CertificationController::class, 'store'])->name('certifications.store');
+    Route::put('/certifications/{certification}', [CertificationController::class, 'update'])->name('certifications.update');
+    Route::delete('/certifications/{certification}', [CertificationController::class, 'destroy'])->name('certifications.destroy');
+
+    // FAQs Management Routes
+    Route::post('/faqs', [FaqController::class, 'store'])->name('faqs.store');
+    Route::put('/faqs/{faq}', [FaqController::class, 'update'])->name('faqs.update');
+    Route::post('/faqs/{faq}/toggle', [FaqController::class, 'toggle'])->name('faqs.toggle');
+    Route::delete('/faqs/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy');
 });
 
 // Fallback 404 Not Found Route
