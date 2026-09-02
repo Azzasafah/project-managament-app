@@ -1,58 +1,61 @@
 import React, { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 
-export default function CertificationModal({ isOpen, onClose, certification = null }) {
+export default function FreelanceProjectModal({ isOpen, onClose, project = null }) {
     const { data, setData, post, put, processing, errors, reset } = useForm({
         title: '',
-        issuer: '',
-        type: 'official',
-        issue_date: '',
-        credential_id: '',
-        credential_url: '',
-        skills: '',
+        client_name: '',
+        role_scope: '',
+        period: '',
+        tech_stack: '',
         description: '',
+        project_url: '',
+        github_url: '',
+        status: 'completed',
         order_index: 0,
         is_active: true,
     });
 
     useEffect(() => {
-        if (certification) {
+        if (project) {
             setData({
-                title: certification.title || '',
-                issuer: certification.issuer || '',
-                type: certification.type || 'official',
-                issue_date: certification.issue_date || '',
-                credential_id: certification.credential_id || '',
-                credential_url: certification.credential_url || '',
-                skills: Array.isArray(certification.skills) ? certification.skills.join(', ') : '',
-                description: certification.description || '',
-                order_index: certification.order_index ?? 0,
-                is_active: certification.is_active ?? true,
+                title: project.title || '',
+                client_name: project.client_name || '',
+                role_scope: project.role_scope || '',
+                period: project.period || '',
+                tech_stack: Array.isArray(project.tech_stack) ? project.tech_stack.join(', ') : '',
+                description: project.description || '',
+                project_url: project.project_url || '',
+                github_url: project.github_url || '',
+                status: project.status || 'completed',
+                order_index: project.order_index ?? 0,
+                is_active: project.is_active ?? true,
             });
         } else {
             reset();
             setData({
                 title: '',
-                issuer: '',
-                type: 'official',
-                issue_date: '',
-                credential_id: '',
-                credential_url: '',
-                skills: '',
+                client_name: '',
+                role_scope: '',
+                period: '',
+                tech_stack: '',
                 description: '',
+                project_url: '',
+                github_url: '',
+                status: 'completed',
                 order_index: 0,
                 is_active: true,
             });
         }
-    }, [certification, isOpen]);
+    }, [project, isOpen]);
 
     if (!isOpen) return null;
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const formattedSkills = data.skills
-            ? data.skills
+        const formattedSkills = data.tech_stack
+            ? data.tech_stack
                   .split(',')
                   .map((s) => s.trim())
                   .filter(Boolean)
@@ -60,16 +63,16 @@ export default function CertificationModal({ isOpen, onClose, certification = nu
 
         const payload = {
             ...data,
-            skills: formattedSkills,
+            tech_stack: formattedSkills,
         };
 
-        if (certification) {
-            put(`/certifications/${certification.id}`, {
+        if (project) {
+            put(`/freelance-projects/${project.id}`, {
                 data: payload,
                 onSuccess: () => onClose(),
             });
         } else {
-            post('/certifications', {
+            post('/freelance-projects', {
                 data: payload,
                 onSuccess: () => {
                     reset();
@@ -86,14 +89,14 @@ export default function CertificationModal({ isOpen, onClose, certification = nu
                 <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center text-lg shadow-xs">
-                            <i className="ph-bold ph-certificate"></i>
+                            <i className="ph-bold ph-briefcase"></i>
                         </div>
                         <div>
                             <span className="text-[9px] font-mono font-bold text-neutral-400 uppercase tracking-widest">
-                                CMS // CREDENTIALS
+                                CMS // FREELANCE_PROJECTS
                             </span>
                             <h3 className="font-display font-black text-slate-900 text-lg leading-tight">
-                                {certification ? 'Edit Sertifikasi / Magang' : 'Tambah Kredensial Baru'}
+                                {project ? 'Edit Proyek Freelance' : 'Tambah Proyek Freelance Baru'}
                             </h3>
                         </div>
                     </div>
@@ -107,142 +110,136 @@ export default function CertificationModal({ isOpen, onClose, certification = nu
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 flex-1 custom-scroll">
-                    {/* Type Selector (Resmi vs Magang) */}
-                    <div>
-                        <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1.5">
-                            Kategori Kredensial
-                        </label>
-                        <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-2xl">
-                            <button
-                                type="button"
-                                onClick={() => setData('type', 'official')}
-                                className={`py-2 px-3 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                                    data.type === 'official'
-                                        ? 'bg-black text-white shadow-xs'
-                                        : 'text-slate-600 hover:text-slate-900'
-                                }`}
-                            >
-                                <i className="ph-bold ph-seal-check text-sm"></i>
-                                Sertifikasi Resmi
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setData('type', 'internship')}
-                                className={`py-2 px-3 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                                    data.type === 'internship'
-                                        ? 'bg-black text-white shadow-xs'
-                                        : 'text-slate-600 hover:text-slate-900'
-                                }`}
-                            >
-                                <i className="ph-bold ph-briefcase text-sm"></i>
-                                Magang / Program
-                            </button>
-                        </div>
-                    </div>
-
                     {/* Title */}
                     <div>
                         <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                            Nama Sertifikasi / Posisi Magang *
+                            Nama Proyek Freelance *
                         </label>
                         <input
                             type="text"
                             required
                             value={data.title}
                             onChange={(e) => setData('title', e.target.value)}
-                            placeholder="Contoh: AWS Certified Cloud Practitioner / Data Engineer Intern"
+                            placeholder="Misal: Sistem Informasi Manajemen Tugas Akhir"
                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
                         />
                         {errors.title && <p className="text-rose-500 text-xs mt-1">{errors.title}</p>}
                     </div>
 
-                    {/* Issuer & Issue Date */}
+                    {/* Client & Role */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                                Penerbit / Perusahaan *
+                                Klien / Instansi *
                             </label>
                             <input
                                 type="text"
                                 required
-                                value={data.issuer}
-                                onChange={(e) => setData('issuer', e.target.value)}
-                                placeholder="Contoh: AWS / Telkom Indonesia"
+                                value={data.client_name}
+                                onChange={(e) => setData('client_name', e.target.value)}
+                                placeholder="Misal: Fakultas Teknik / PT Inovasi"
                                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
                             />
-                            {errors.issuer && <p className="text-rose-500 text-xs mt-1">{errors.issuer}</p>}
+                            {errors.client_name && <p className="text-rose-500 text-xs mt-1">{errors.client_name}</p>}
                         </div>
 
                         <div>
                             <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                                Tanggal / Periode
+                                Peran / Lingkup Kerja
                             </label>
                             <input
                                 type="text"
-                                value={data.issue_date}
-                                onChange={(e) => setData('issue_date', e.target.value)}
-                                placeholder="Contoh: Jan 2026 / Jul - Des 2025"
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
+                                value={data.role_scope}
+                                onChange={(e) => setData('role_scope', e.target.value)}
+                                placeholder="Misal: Fullstack Developer / QA Tester"
+                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
                             />
                         </div>
                     </div>
 
-                    {/* Credential ID & URL */}
+                    {/* Period & Status */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                                ID Kredensial
+                                Periode Pengerjaan
                             </label>
                             <input
                                 type="text"
-                                value={data.credential_id}
-                                onChange={(e) => setData('credential_id', e.target.value)}
-                                placeholder="Contoh: AWS-CCP-982147"
+                                value={data.period}
+                                onChange={(e) => setData('period', e.target.value)}
+                                placeholder="Misal: Apr 2021 – Jul 2021"
                                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
                             />
                         </div>
 
                         <div>
                             <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                                Link Verifikasi Kredensial
+                                Status Proyek
                             </label>
-                            <input
-                                type="url"
-                                value={data.credential_url}
-                                onChange={(e) => setData('credential_url', e.target.value)}
-                                placeholder="https://..."
+                            <select
+                                value={data.status}
+                                onChange={(e) => setData('status', e.target.value)}
                                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
-                            />
-                            {errors.credential_url && (
-                                <p className="text-rose-500 text-xs mt-1">{errors.credential_url}</p>
-                            )}
+                            >
+                                <option value="completed">Selesai (Completed)</option>
+                                <option value="ongoing">Sedang Berjalan (Ongoing)</option>
+                            </select>
                         </div>
                     </div>
 
-                    {/* Skills Tagging */}
+                    {/* Tech Stack */}
                     <div>
                         <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                            Skill Terkait (Pisahkan dengan koma)
+                            Tech Stack (Pisahkan koma)
                         </label>
                         <input
                             type="text"
-                            value={data.skills}
-                            onChange={(e) => setData('skills', e.target.value)}
-                            placeholder="Contoh: PySpark, Airflow, Delta Lake, AWS"
+                            value={data.tech_stack}
+                            onChange={(e) => setData('tech_stack', e.target.value)}
+                            placeholder="CodeIgniter, PHP, MySQL, Bootstrap, UML"
                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
                         />
+                    </div>
+
+                    {/* URLs */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                                Link Demo / Live URL
+                            </label>
+                            <input
+                                type="url"
+                                value={data.project_url}
+                                onChange={(e) => setData('project_url', e.target.value)}
+                                placeholder="https://..."
+                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                                Link GitHub Repository
+                            </label>
+                            <input
+                                type="url"
+                                value={data.github_url}
+                                onChange={(e) => setData('github_url', e.target.value)}
+                                placeholder="https://github.com/..."
+                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
+                            />
+                        </div>
                     </div>
 
                     {/* Description */}
                     <div>
                         <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                            Deskripsi Ringkas
+                            Deskripsi Proyek & Kontribusi
                         </label>
                         <textarea
                             rows={3}
                             value={data.description}
                             onChange={(e) => setData('description', e.target.value)}
-                            placeholder="Jelaskan ringkasan kompetensi atau pencapaian..."
+                            placeholder="Jelaskan ringkasan solusi, arsitektur, dan dampak proyek bagi klien..."
                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-sans focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
                         />
                     </div>
@@ -286,7 +283,7 @@ export default function CertificationModal({ isOpen, onClose, certification = nu
                             className="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-xl text-xs font-mono font-bold shadow-md flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50"
                         >
                             <i className="ph-bold ph-floppy-disk text-sm"></i>
-                            {processing ? 'Menyimpan...' : 'Simpan Kredensial'}
+                            {processing ? 'Menyimpan...' : 'Simpan Proyek'}
                         </button>
                     </div>
                 </form>

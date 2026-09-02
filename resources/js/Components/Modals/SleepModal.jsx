@@ -91,19 +91,14 @@ export default function SleepModal({
         const totalScore = Math.min(100, Math.max(0, durScore + latScore + wakeScore + feelScore));
 
         let statusText = 'GOOD 😴';
-        let badgeStyle = 'text-indigo-600 bg-indigo-50 border-indigo-200';
         if (totalScore >= 85) {
             statusText = 'EXCELLENT 🌟';
-            badgeStyle = 'text-emerald-600 bg-emerald-50 border-emerald-200';
         } else if (totalScore >= 70) {
             statusText = 'GOOD 😴';
-            badgeStyle = 'text-indigo-600 bg-indigo-50 border-indigo-200';
         } else if (totalScore >= 50) {
             statusText = 'FAIR 😐';
-            badgeStyle = 'text-amber-600 bg-amber-50 border-amber-200';
         } else {
             statusText = 'POOR ⚠️';
-            badgeStyle = 'text-rose-600 bg-rose-50 border-rose-200';
         }
 
         // Personalized Recommendation
@@ -120,7 +115,7 @@ export default function SleepModal({
             rec = 'Kondisi pagi terasa lelah. Jangan lupa minum segelas air putih hangat dan lakukan peregangan ringan agar badan lebih segar.';
         }
 
-        return { score: totalScore, statusText, badgeStyle, recommendation: rec };
+        return { score: totalScore, statusText, recommendation: rec };
     };
 
     const analysis = getSleepAnalysis();
@@ -135,7 +130,7 @@ export default function SleepModal({
             duration_hours: durationInfo.decimal,
             fall_asleep_time: fallAsleepTime,
             wake_up_count: wakeUpCount,
-            morning_feeling: morningFeeling.replace(/^[^\s]+\s/, ''), // strip emoji for clean text or keep
+            morning_feeling: morningFeeling.replace(/^[^\s]+\s/, ''),
             score: analysis.score,
             quality: analysis.statusText.split(' ')[0],
             recommendation: analysis.recommendation,
@@ -156,102 +151,99 @@ export default function SleepModal({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-fade-in">
-            <div className="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-slate-100 max-h-[92vh] overflow-y-auto custom-scroll animate-scale-up space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in font-sans">
+            <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 max-h-[92vh] overflow-y-auto custom-scroll animate-scale-up space-y-4">
                 
                 {/* Header */}
-                <div className="flex justify-between items-center border-b border-slate-100 pb-4">
+                <div className="flex justify-between items-center border-b border-slate-100 pb-3.5">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
-                            <i className="ph-fill ph-moon text-xl"></i>
+                        <div className="w-9 h-9 rounded-xl bg-black text-white flex items-center justify-center shadow-xs">
+                            <i className="ph-bold ph-moon-stars text-base"></i>
                         </div>
                         <div>
-                            <h3 className="font-extrabold text-lg text-slate-800 tracking-tight">
-                                {viewResult ? 'Hasil Analisis Sleep Tracker' : '🌙 Form Sleep Tracker'}
+                            <span className="text-[9px] font-mono font-bold text-neutral-400 uppercase tracking-widest">
+                                WELLBEING // TRACKER
+                            </span>
+                            <h3 className="font-display font-extrabold text-lg text-slate-900 leading-tight">
+                                {viewResult ? 'Hasil Analisis Sleep Score' : 'Form Sleep Tracker'}
                             </h3>
-                            <p className="text-xs text-slate-400 font-medium">
-                                {viewResult ? 'Kalkulasi otomatis Sleep Score & Evaluasi' : 'Catat pola tidur & dapatkan rekomendasi cerdas'}
-                            </p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+                        className="text-slate-400 hover:text-slate-900 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                     >
-                        <i className="ph-bold ph-x text-xl"></i>
+                        <i className="ph-bold ph-x text-lg"></i>
                     </button>
                 </div>
 
                 {/* RESULT VIEW (AFTER SUBMISSION) */}
                 {viewResult ? (
-                    <div className="space-y-6 animate-fade-in">
+                    <div className="space-y-5 animate-fade-in">
                         {/* Sleep Score Hero Card */}
-                        <div className="text-center p-6 bg-gradient-to-b from-slate-900 to-indigo-950 text-white rounded-3xl shadow-xl relative overflow-hidden space-y-3">
-                            <div className="absolute -top-12 -right-12 w-36 h-36 bg-indigo-500/20 rounded-full blur-2xl pointer-events-none" />
-                            <div className="absolute -bottom-12 -left-12 w-36 h-36 bg-cyan-400/20 rounded-full blur-2xl pointer-events-none" />
-
-                            <p className="text-xs font-mono uppercase tracking-widest text-indigo-300 font-semibold">
-                                SLEEP SCORE
+                        <div className="text-center p-6 bg-[#0e0e12] text-white rounded-3xl shadow-xl relative overflow-hidden space-y-2.5 border border-white/10">
+                            <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 font-bold">
+                                SLEEP SCORE EVALUATION
                             </p>
 
                             <div className="flex items-baseline justify-center gap-1">
-                                <span className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-100 to-cyan-300">
+                                <span className="text-5xl sm:text-6xl font-display font-black text-white tabular-nums">
                                     {analysis.score}
                                 </span>
-                                <span className="text-lg text-slate-400 font-bold">/100</span>
+                                <span className="text-base font-mono text-neutral-500 font-bold">/100</span>
                             </div>
 
-                            <div className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-xs font-extrabold tracking-wider text-cyan-300">
+                            <div className="inline-block px-3 py-1 bg-white/10 border border-white/20 rounded-xl text-xs font-mono font-bold tracking-wider text-emerald-400">
                                 {analysis.statusText}
                             </div>
                         </div>
 
                         {/* Breakdown Metrics Table */}
-                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-2.5 text-xs">
+                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2 text-xs font-mono">
                             <div className="flex justify-between items-center py-1 border-b border-slate-200/60">
-                                <span className="text-slate-500 font-medium">Durasi tidur</span>
-                                <span className="font-bold text-slate-800 font-mono text-sm">{durationInfo.text}</span>
+                                <span className="text-slate-500">Durasi tidur</span>
+                                <span className="font-bold text-slate-900">{durationInfo.text}</span>
                             </div>
                             <div className="flex justify-between items-center py-1 border-b border-slate-200/60">
-                                <span className="text-slate-500 font-medium">Waktu tertidur</span>
-                                <span className="font-bold text-slate-800">{fallAsleepTime}</span>
+                                <span className="text-slate-500">Waktu tertidur</span>
+                                <span className="font-bold text-slate-900">{fallAsleepTime}</span>
                             </div>
                             <div className="flex justify-between items-center py-1 border-b border-slate-200/60">
-                                <span className="text-slate-500 font-medium">Terbangun saat tidur</span>
-                                <span className="font-bold text-slate-800">{wakeUpCount}</span>
+                                <span className="text-slate-500">Terbangun saat tidur</span>
+                                <span className="font-bold text-slate-900">{wakeUpCount}</span>
                             </div>
                             <div className="flex justify-between items-center py-1">
-                                <span className="text-slate-500 font-medium">Kondisi pagi</span>
-                                <span className="font-bold text-slate-800">{morningFeeling}</span>
+                                <span className="text-slate-500">Kondisi pagi</span>
+                                <span className="font-bold text-slate-900">{morningFeeling}</span>
                             </div>
                         </div>
 
                         {/* Smart Recommendation Card */}
-                        <div className="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100/80 space-y-1.5">
-                            <div className="flex items-center gap-2 text-indigo-700 text-xs font-bold">
-                                <i className="ph-bold ph-lightbulb text-base"></i>
+                        <div className="p-4 rounded-2xl bg-slate-100 border border-slate-200 space-y-1">
+                            <div className="flex items-center gap-1.5 text-neutral-800 text-xs font-mono font-bold">
+                                <i className="ph-bold ph-lightbulb text-sm"></i>
                                 <span>Rekomendasi Cerdas:</span>
                             </div>
-                            <p className="text-xs text-slate-700 leading-relaxed font-medium italic">
+                            <p className="text-xs text-slate-700 leading-relaxed font-sans italic">
                                 “{analysis.recommendation}”
                             </p>
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-3 pt-2">
+                        <div className="flex gap-2.5 pt-2">
                             <button
                                 type="button"
                                 onClick={() => setViewResult(false)}
-                                className="w-1/2 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-bold transition-colors cursor-pointer"
+                                className="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer active:scale-95"
                             >
                                 Edit Input
                             </button>
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="w-1/2 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-bold transition-all shadow-md shadow-indigo-600/30 cursor-pointer"
+                                className="w-1/2 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-xl text-xs font-mono font-bold transition-all shadow-md cursor-pointer active:scale-[0.98]"
                             >
-                                Tutup & Simpan
+                                Selesai & Tutup
                             </button>
                         </div>
                     </div>
@@ -260,7 +252,7 @@ export default function SleepModal({
                     <form onSubmit={handleSubmitForm} className="space-y-4">
                         {/* 1. Tanggal */}
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
                                 1. Tanggal
                             </label>
                             <input
@@ -268,57 +260,57 @@ export default function SleepModal({
                                 required
                                 value={sleepDate}
                                 onChange={(e) => setSleepDate(e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:ring-2 focus:ring-black focus:outline-none"
                             />
                         </div>
 
                         {/* 2 & 3. Waktu Mulai Tidur & Waktu Bangun */}
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                                    2. Waktu Mulai Tidur
+                                <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                                    2. Mulai Tidur
                                 </label>
                                 <input
                                     type="time"
                                     required
                                     value={sleepTime}
                                     onChange={(e) => setSleepTime(e.target.value)}
-                                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:ring-2 focus:ring-black focus:outline-none"
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                                    3. Waktu Bangun
+                                <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                                    3. Bangun
                                 </label>
                                 <input
                                     type="time"
                                     required
                                     value={wakeTime}
                                     onChange={(e) => setWakeTime(e.target.value)}
-                                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:ring-2 focus:ring-black focus:outline-none"
                                 />
                             </div>
                         </div>
 
                         {/* Auto-Calculated Duration Banner */}
-                        <div className="flex items-center justify-between p-3 bg-indigo-50/60 rounded-2xl border border-indigo-100 text-xs">
-                            <span className="text-slate-600 font-medium">Otomatis Durasi Tidur:</span>
-                            <span className="font-extrabold text-indigo-700 font-mono text-sm bg-white px-3 py-1 rounded-xl shadow-xs border border-indigo-100">
+                        <div className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs font-mono">
+                            <span className="text-slate-600">Durasi Tidur Otomatis:</span>
+                            <span className="font-bold text-black bg-white px-3 py-1 rounded-xl border border-slate-200">
                                 {durationInfo.text} ({durationInfo.decimal} Jam)
                             </span>
                         </div>
 
                         {/* 4. Berapa lama sampai tertidur? */}
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
                                 4. Berapa lama sampai tertidur?
                             </label>
                             <select
                                 value={fallAsleepTime}
                                 onChange={(e) => setFallAsleepTime(e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:ring-2 focus:ring-black focus:outline-none"
                             >
-                                <option value="≤15 menit">≤ 15 menit (Cepat & Lelap)</option>
+                                <option value="≤15 menit">&le; 15 menit (Cepat & Lelap)</option>
                                 <option value="16–30 menit">16–30 menit (Normal)</option>
                                 <option value="31–60 menit">31–60 menit (Agak Lama)</option>
                                 <option value=">60 menit">&gt; 60 menit (Insomnia / Sulit Tidur)</option>
@@ -327,8 +319,8 @@ export default function SleepModal({
 
                         {/* 5. Berapa kali terbangun saat tidur? */}
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                                5. Berapa kali terbangun saat tidur?
+                            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1.5">
+                                5. Berapa kali terbangun?
                             </label>
                             <div className="grid grid-cols-4 gap-2">
                                 {['0 kali', '1 kali', '2–3 kali', '>3 kali'].map((opt) => (
@@ -336,10 +328,10 @@ export default function SleepModal({
                                         type="button"
                                         key={opt}
                                         onClick={() => setWakeUpCount(opt)}
-                                        className={`py-2 px-2 rounded-xl text-xs font-bold transition-all border cursor-pointer text-center ${
+                                        className={`py-2 px-1.5 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer text-center ${
                                             wakeUpCount === opt
-                                                ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
-                                                : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                                                ? 'bg-black text-white border-black shadow-xs'
+                                                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                                         }`}
                                     >
                                         {opt}
@@ -350,8 +342,8 @@ export default function SleepModal({
 
                         {/* 6. Bagaimana perasaanmu saat bangun? */}
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                                6. Bagaimana perasaanmu saat bangun?
+                            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1.5">
+                                6. Perasaan saat bangun?
                             </label>
                             <div className="grid grid-cols-2 gap-2">
                                 {[
@@ -364,10 +356,10 @@ export default function SleepModal({
                                         type="button"
                                         key={item.id}
                                         onClick={() => setMorningFeeling(item.id)}
-                                        className={`p-2.5 rounded-xl text-xs font-bold transition-all border text-left cursor-pointer flex items-center gap-2 ${
+                                        className={`p-2.5 rounded-xl text-xs font-mono font-bold transition-all border text-left cursor-pointer flex items-center gap-2 ${
                                             morningFeeling === item.id
-                                                ? 'bg-indigo-50 text-indigo-700 border-indigo-300 shadow-xs'
-                                                : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                                                ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
+                                                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                                         }`}
                                     >
                                         <span>{item.label}</span>
@@ -381,13 +373,13 @@ export default function SleepModal({
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="px-4 py-2.5 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                                className="px-4 py-2.5 text-xs font-mono font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer active:scale-95"
                             >
                                 Batal
                             </button>
                             <button
                                 type="submit"
-                                className="px-6 py-2.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md shadow-indigo-600/30 transition-all cursor-pointer flex items-center gap-2"
+                                className="px-5 py-2.5 text-xs font-mono font-bold bg-black hover:bg-neutral-800 text-white rounded-xl shadow-md transition-all cursor-pointer active:scale-[0.98] flex items-center gap-2"
                             >
                                 <i className="ph-bold ph-chart-line-up"></i>
                                 <span>Hitung & Simpan Sleep Score</span>

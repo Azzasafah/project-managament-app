@@ -23,6 +23,7 @@ import TaskModal from '@/Components/Modals/TaskModal';
 import PortfolioModal from '@/Components/Modals/PortfolioModal';
 import CertificationModal from '@/Components/Modals/CertificationModal';
 import FaqModal from '@/Components/Modals/FaqModal';
+import FreelanceProjectModal from '@/Components/Modals/FreelanceProjectModal';
 import JournalModal from '@/Components/Modals/JournalModal';
 import ReadJournalModal from '@/Components/Modals/ReadJournalModal';
 import KajianModal from '@/Components/Modals/KajianModal';
@@ -50,6 +51,7 @@ export default function Dashboard({
     refreshingActivities = [],
     certifications = [],
     faqs = [],
+    freelanceProjects = [],
 }) {
     const { auth } = usePage().props;
     const user = auth?.user || { name: 'Admin User', email: 'admin@personalhub.test' };
@@ -101,12 +103,17 @@ export default function Dashboard({
     const [portfolioModal, setPortfolioModal] = useState({
         open: false,
         taskId: null,
-        form: { is_portfolio: true, portfolio_summary: '', tech_stack: '', github_url: '', live_url: '' },
+        form: { is_portfolio: true, portfolio_summary: '', tech_stack: '', github_url: '', live_url: '', button_display_mode: 'both' },
     });
 
     const [certificationModal, setCertificationModal] = useState({
         open: false,
         cert: null,
+    });
+
+    const [freelanceModal, setFreelanceModal] = useState({
+        open: false,
+        project: null,
     });
 
     const [faqModal, setFaqModal] = useState({
@@ -398,7 +405,6 @@ export default function Dashboard({
         });
     };
 
-    // Cert & FAQ Handlers
     const confirmDeleteCert = (cert) => {
         setDeleteModal({
             open: true,
@@ -406,6 +412,17 @@ export default function Dashboard({
             id: cert.id,
             itemName: cert.title || 'Kredensial ini',
             title: 'Hapus Kredensial Sertifikasi?',
+            isDeleting: false,
+        });
+    };
+
+    const confirmDeleteFreelance = (project) => {
+        setDeleteModal({
+            open: true,
+            type: 'freelance',
+            id: project.id,
+            itemName: project.title || 'Proyek freelance ini',
+            title: 'Hapus Proyek Freelance?',
             isDeleting: false,
         });
     };
@@ -431,6 +448,7 @@ export default function Dashboard({
             kajian: `/kajian/${deleteModal.id}`,
             refreshing: `/wellbeing/refreshing/${deleteModal.id}`,
             cert: `/certifications/${deleteModal.id}`,
+            freelance: `/freelance-projects/${deleteModal.id}`,
             faq: `/faqs/${deleteModal.id}`,
         };
 
@@ -440,6 +458,7 @@ export default function Dashboard({
             kajian: 'Data kajian berhasil dihapus.',
             refreshing: 'Aktivitas refreshing berhasil dihapus.',
             cert: 'Kredensial sertifikasi berhasil dihapus.',
+            freelance: 'Proyek freelance berhasil dihapus.',
             faq: 'FAQ berhasil dihapus.',
         };
 
@@ -541,6 +560,7 @@ export default function Dashboard({
                                         tech_stack: Array.isArray(task.tech_stack) ? task.tech_stack.join(', ') : task.tech_stack || '',
                                         github_url: task.github_url || '',
                                         live_url: task.live_url || '',
+                                        button_display_mode: task.button_display_mode || 'both',
                                     },
                                 })
                             }
@@ -551,10 +571,14 @@ export default function Dashboard({
                     {currentTab === 'portfolio_manager' && (
                         <PortfolioManagerView
                             certifications={certifications}
+                            freelanceProjects={freelanceProjects}
                             faqs={faqs}
                             onAddCert={() => setCertificationModal({ open: true, cert: null })}
                             onEditCert={(cert) => setCertificationModal({ open: true, cert })}
                             onDeleteCert={confirmDeleteCert}
+                            onAddFreelance={() => setFreelanceModal({ open: true, project: null })}
+                            onEditFreelance={(project) => setFreelanceModal({ open: true, project })}
+                            onDeleteFreelance={confirmDeleteFreelance}
                             onAddFaq={() => setFaqModal({ open: true, faq: null })}
                             onEditFaq={(faq) => setFaqModal({ open: true, faq })}
                             onDeleteFaq={confirmDeleteFaq}
@@ -708,6 +732,12 @@ export default function Dashboard({
                 isOpen={certificationModal.open}
                 certification={certificationModal.cert}
                 onClose={() => setCertificationModal({ open: false, cert: null })}
+            />
+
+            <FreelanceProjectModal
+                isOpen={freelanceModal.open}
+                project={freelanceModal.project}
+                onClose={() => setFreelanceModal({ open: false, project: null })}
             />
 
             <FaqModal

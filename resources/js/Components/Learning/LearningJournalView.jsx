@@ -23,20 +23,28 @@ export default function LearningJournalView({
     });
 
     return (
-        <div className="space-y-6 max-w-4xl mx-auto">
+        <div className="space-y-6 max-w-4xl mx-auto font-sans">
             {/* Banner Header */}
-            <div className="bg-gradient-to-br from-indigo-950 via-indigo-900 to-indigo-800 p-6 md:p-8 rounded-3xl text-white shadow-floating relative overflow-hidden">
-                <i className="ph-fill ph-notebook absolute -right-4 -bottom-4 text-9xl text-white/10 transform -rotate-12"></i>
+            <div className="bg-[#0e0e12] p-6 sm:p-8 md:p-10 rounded-3xl text-white shadow-xl relative overflow-hidden border border-white/10">
+                <div
+                    className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                    style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '16px 16px' }}
+                />
                 <div className="relative z-10">
-                    <h2 className="text-2xl font-bold mb-2">Daily Learning Journal</h2>
-                    <p className="text-indigo-200 text-sm mb-6 max-w-lg">
-                        Dokumentasikan progres harianmu di Data Engineering & Cloud. Menulis ulang materi membantumu mengingat lebih lama.
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono font-bold tracking-widest text-neutral-300 uppercase mb-3">
+                        <i className="ph-bold ph-notebook text-emerald-400"></i> DOCUMENTATION // CONTINUOUS_STUDY
+                    </div>
+                    <h2 className="font-display text-2xl sm:text-4xl font-black mb-2 tracking-tight uppercase">
+                        Daily Learning Journal
+                    </h2>
+                    <p className="text-neutral-400 text-xs sm:text-sm mb-6 max-w-lg leading-relaxed font-sans">
+                        Dokumentasikan progres harianmu di Data Engineering & Cloud. Menulis ulang materi membantumu mengingat dan memahami arsitektur lebih dalam.
                     </p>
                     <button
                         onClick={onAddNewJournal}
-                        className="px-5 py-3 bg-white text-indigo-900 rounded-xl text-sm font-bold hover:bg-indigo-50 transition-colors shadow-sm flex items-center gap-2 w-full sm:w-auto justify-center cursor-pointer"
+                        className="px-5 py-3 bg-white hover:bg-neutral-200 text-black rounded-xl text-xs sm:text-sm font-mono font-bold transition-all shadow-md flex items-center gap-2 w-full sm:w-auto justify-center cursor-pointer active:scale-[0.98]"
                     >
-                        <i className="ph-bold ph-pencil-simple"></i> Tulis Entri Hari Ini
+                        <i className="ph-bold ph-pencil-simple text-base"></i> Tulis Entri Hari Ini
                     </button>
                 </div>
             </div>
@@ -48,10 +56,10 @@ export default function LearningJournalView({
                         <button
                             key={cat}
                             onClick={() => setFilterCategory(cat)}
-                            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-colors cursor-pointer ${
+                            className={`px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all cursor-pointer active:scale-95 ${
                                 filterCategory === cat
-                                    ? 'bg-indigo-600 text-white shadow-sm'
-                                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                                    ? 'bg-black text-white shadow-xs'
+                                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
                             }`}
                         >
                             {cat === 'all' ? 'Semua Jurnal' : cat}
@@ -59,20 +67,20 @@ export default function LearningJournalView({
                     ))}
                 </div>
 
-                <div className="relative w-full sm:w-64">
-                    <i className="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <div className="relative w-full sm:w-72">
+                    <i className="ph-bold ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Cari materi / tag..."
-                        className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full pl-10 pr-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-black transition-all shadow-xs"
                     />
                 </div>
             </div>
 
             {/* Journal Cards List */}
-            <div className="space-y-6">
+            <div className="space-y-4">
                 {filteredJournals.map((journal) => (
                     <JournalCard
                         key={journal.id}
@@ -84,10 +92,10 @@ export default function LearningJournalView({
                 ))}
 
                 {filteredJournals.length === 0 && (
-                    <div className="p-12 text-center bg-white rounded-3xl border border-slate-100 shadow-soft">
-                        <i className="ph-fill ph-notebook text-5xl text-slate-300 mb-2"></i>
-                        <h4 className="font-bold text-slate-700">Tidak ada jurnal ditemukan</h4>
-                        <p className="text-xs text-slate-400 mt-1">Mulai tulis catatan belajar harianmu sekarang!</p>
+                    <div className="p-14 text-center bg-white rounded-3xl border border-slate-200 shadow-xs">
+                        <i className="ph-bold ph-notebook text-4xl text-slate-300 mb-2"></i>
+                        <h4 className="font-display font-bold text-slate-800 text-base">Tidak ada jurnal ditemukan</h4>
+                        <p className="text-xs font-mono text-slate-400 mt-1">Mulai tulis catatan belajar harianmu sekarang!</p>
                     </div>
                 )}
             </div>

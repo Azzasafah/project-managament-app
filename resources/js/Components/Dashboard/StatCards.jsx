@@ -8,56 +8,68 @@ export default function StatCards({
     onTabChange,
 }) {
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 font-sans">
             <div
                 onClick={() => onTabChange('projects')}
-                className="bg-white p-5 rounded-3xl shadow-soft border border-slate-100 hover:-translate-y-1 transition-transform duration-300 cursor-pointer"
+                className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs hover:-translate-y-1 hover:border-slate-400 transition-all duration-300 cursor-pointer active:scale-[0.98]"
             >
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
-                    <i className="ph-fill ph-kanban text-xl"></i>
+                <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center text-lg shadow-sm">
+                        <i className="ph-bold ph-kanban"></i>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-widest">TASK</span>
                 </div>
-                <p className="text-slate-400 text-xs font-medium uppercase tracking-wide">Tugas Aktif</p>
-                <p className="text-2xl font-bold text-slate-800 mt-1">
-                    {activeTasksCount} <span className="text-sm font-normal text-slate-500">Task</span>
+                <p className="text-neutral-500 text-xs font-mono font-semibold uppercase tracking-wider">Tugas Aktif</p>
+                <p className="text-2xl sm:text-3xl font-display font-black text-slate-900 mt-1 tabular-nums">
+                    {activeTasksCount} <span className="text-xs font-mono font-normal text-neutral-500">Item</span>
                 </p>
             </div>
 
             <div
                 onClick={() => onTabChange('learning')}
-                className="bg-white p-5 rounded-3xl shadow-soft border border-slate-100 hover:-translate-y-1 transition-transform duration-300 cursor-pointer"
+                className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs hover:-translate-y-1 hover:border-slate-400 transition-all duration-300 cursor-pointer active:scale-[0.98]"
             >
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
-                    <i className="ph-fill ph-notebook text-xl"></i>
+                <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-2xl bg-neutral-900 text-emerald-400 flex items-center justify-center text-lg shadow-sm">
+                        <i className="ph-bold ph-notebook"></i>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-widest">JOURNAL</span>
                 </div>
-                <p className="text-slate-400 text-xs font-medium uppercase tracking-wide">Jurnal Belajar</p>
-                <p className="text-2xl font-bold text-slate-800 mt-1">
-                    {journalCount} <span className="text-sm font-normal text-slate-500">Entri</span>
+                <p className="text-neutral-500 text-xs font-mono font-semibold uppercase tracking-wider">Jurnal Belajar</p>
+                <p className="text-2xl sm:text-3xl font-display font-black text-slate-900 mt-1 tabular-nums">
+                    {journalCount} <span className="text-xs font-mono font-normal text-neutral-500">Entri</span>
                 </p>
             </div>
 
             <div
                 onClick={() => onTabChange('spiritual')}
-                className="bg-white p-5 rounded-3xl shadow-soft border border-slate-100 hover:-translate-y-1 transition-transform duration-300 cursor-pointer"
+                className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs hover:-translate-y-1 hover:border-slate-400 transition-all duration-300 cursor-pointer active:scale-[0.98]"
             >
-                <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
-                    <i className="ph-fill ph-mosque text-xl"></i>
+                <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-2xl bg-neutral-900 text-amber-300 flex items-center justify-center text-lg shadow-sm">
+                        <i className="ph-bold ph-mosque"></i>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-widest">KAJIAN</span>
                 </div>
-                <p className="text-slate-400 text-xs font-medium uppercase tracking-wide">Kajian Terdekat</p>
-                <p className="text-lg font-bold text-slate-800 mt-1 truncate leading-tight">
+                <p className="text-neutral-500 text-xs font-mono font-semibold uppercase tracking-wider">Agenda Spiritual</p>
+                <p className="text-sm sm:text-base font-bold text-slate-900 mt-2 truncate leading-tight">
                     {nearestKajian ? nearestKajian.title : 'Belum ada agenda'}
                 </p>
             </div>
 
             <div
                 onClick={() => onTabChange('wellbeing')}
-                className="bg-white p-5 rounded-3xl shadow-soft border border-slate-100 hover:-translate-y-1 transition-transform duration-300 cursor-pointer"
+                className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs hover:-translate-y-1 hover:border-slate-400 transition-all duration-300 cursor-pointer active:scale-[0.98]"
             >
-                <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3">
-                    <i className="ph-fill ph-moon-stars text-xl"></i>
+                <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-2xl bg-neutral-900 text-purple-300 flex items-center justify-center text-lg shadow-sm">
+                        <i className="ph-bold ph-moon-stars"></i>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-widest">SLEEP</span>
                 </div>
-                <p className="text-slate-400 text-xs font-medium uppercase tracking-wide">Rata-rata Tidur</p>
-                <p className="text-2xl font-bold text-slate-800 mt-1">
-                    {avgSleep} <span className="text-sm font-normal text-slate-500">Jam</span>
+                <p className="text-neutral-500 text-xs font-mono font-semibold uppercase tracking-wider">Rata-rata Tidur</p>
+                <p className="text-2xl sm:text-3xl font-display font-black text-slate-900 mt-1 tabular-nums">
+                    {avgSleep} <span className="text-xs font-mono font-normal text-neutral-500">Jam/Hari</span>
                 </p>
             </div>
         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Certification;
 use App\Models\Faq;
+use App\Models\FreelanceProject;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,6 +17,11 @@ class PortfolioController extends Controller
         $portfolioProjects = Task::where('is_portfolio', true)
             ->orderBy('order_index', 'asc')
             ->orderBy('updated_at', 'desc')
+            ->get();
+
+        $freelanceProjects = FreelanceProject::where('is_active', true)
+            ->orderBy('order_index', 'asc')
+            ->orderBy('id', 'desc')
             ->get();
 
         $certifications = Certification::where('is_active', true)
@@ -32,6 +38,7 @@ class PortfolioController extends Controller
 
         return Inertia::render('Portfolio/Index', [
             'projects' => $portfolioProjects,
+            'freelanceProjects' => $freelanceProjects,
             'certifications' => $certifications,
             'faqs' => $faqs,
             'user' => $adminUser ? [

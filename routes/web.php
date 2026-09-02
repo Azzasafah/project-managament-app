@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CertificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\FreelanceProjectController;
 use App\Http\Controllers\KajianController;
 use App\Http\Controllers\LearningJournalController;
 use App\Http\Controllers\PortfolioController;
@@ -62,6 +63,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/faqs/{faq}', [FaqController::class, 'update'])->name('faqs.update');
     Route::post('/faqs/{faq}/toggle', [FaqController::class, 'toggle'])->name('faqs.toggle');
     Route::delete('/faqs/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy');
+
+    // Freelance Projects Management Routes
+    Route::post('/freelance-projects', [FreelanceProjectController::class, 'store'])->name('freelance-projects.store');
+    Route::put('/freelance-projects/{freelanceProject}', [FreelanceProjectController::class, 'update'])->name('freelance-projects.update');
+    Route::post('/freelance-projects/{freelanceProject}/toggle', [FreelanceProjectController::class, 'toggle'])->name('freelance-projects.toggle');
+    Route::delete('/freelance-projects/{freelanceProject}', [FreelanceProjectController::class, 'destroy'])->name('freelance-projects.destroy');
 });
 
 // Fallback 404 Not Found Route

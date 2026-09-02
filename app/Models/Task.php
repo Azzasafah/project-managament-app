@@ -24,6 +24,7 @@ class Task extends Model
         'portfolio_summary',
         'github_url',
         'live_url',
+        'button_display_mode',
         'thumbnail',
         'tech_stack',
     ];

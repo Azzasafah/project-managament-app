@@ -37,7 +37,7 @@ export default function NotFound() {
             if (!isDeleting) {
                 const nextText = fullText.substring(0, currentText.length + 1);
                 setCurrentText(nextText);
-                setTypingSpeed(50);
+                setTypingSpeed(45);
 
                 if (nextText === fullText) {
                     setTypingSpeed(2500);
@@ -51,7 +51,7 @@ export default function NotFound() {
                 if (nextText === '') {
                     setIsDeleting(false);
                     setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
-                    setTypingSpeed(400);
+                    setTypingSpeed(350);
                 }
             }
         }, typingSpeed);
@@ -63,10 +63,10 @@ export default function NotFound() {
 
     return (
         <div
-            className={`min-h-screen font-sans relative overflow-x-hidden flex flex-col justify-between transition-colors duration-500 ${
+            className={`min-h-screen font-sans relative overflow-x-hidden flex flex-col justify-between transition-colors duration-500 selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-black ${
                 isDark
-                    ? 'bg-[#08080a] text-[#ededed] selection:bg-white selection:text-black'
-                    : 'bg-[#f8f9fa] text-[#18181b] selection:bg-black selection:text-white'
+                    ? 'bg-[#09090b] text-[#f4f4f5]'
+                    : 'bg-[#fafafa] text-[#18181b]'
             }`}
         >
             <Head title="404 — Halaman Tidak Ditemukan | Safah" />
@@ -74,38 +74,38 @@ export default function NotFound() {
             {/* Subtle Manga Dot Screen Matrix Background */}
             <div
                 className={`fixed inset-0 pointer-events-none z-0 transition-opacity duration-500 ${
-                    isDark ? 'opacity-[0.035]' : 'opacity-[0.04]'
+                    isDark ? 'opacity-[0.03]' : 'opacity-[0.035]'
                 }`}
                 style={{
                     backgroundImage: isDark
                         ? 'radial-gradient(#ffffff 1px, transparent 1px)'
                         : 'radial-gradient(#000000 1px, transparent 1px)',
-                    backgroundSize: '24px 24px',
+                    backgroundSize: '20px 20px',
                 }}
             />
 
-            {/* Background Ambient Monochrome Gradients */}
+            {/* Ambient Lighting */}
             <div
-                className={`fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full blur-[140px] pointer-events-none z-0 transition-colors duration-700 ${
-                    isDark ? 'bg-white/[0.02]' : 'bg-black/[0.02]'
+                className={`fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full blur-[160px] pointer-events-none z-0 transition-colors duration-700 ${
+                    isDark ? 'bg-white/[0.015]' : 'bg-black/[0.015]'
                 }`}
             />
 
             {/* Top Navigation Bar */}
             <header
-                className={`sticky top-0 z-40 backdrop-blur-xl border-b px-4 sm:px-8 lg:px-16 h-20 flex items-center justify-between transition-colors duration-500 ${
+                className={`sticky top-0 z-40 backdrop-blur-md border-b px-4 sm:px-8 lg:px-16 h-20 flex items-center justify-between transition-colors duration-300 ${
                     isDark
-                        ? 'bg-[#08080a]/90 border-white/[0.08]'
-                        : 'bg-[#f8f9fa]/90 border-black/[0.08]'
+                        ? 'bg-[#09090b]/85 border-white/[0.08]'
+                        : 'bg-[#fafafa]/85 border-black/[0.08]'
                 }`}
             >
                 <div className="flex items-center gap-3">
                     <Link href="/" className="flex items-center gap-3 group">
                         <div
-                            className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xl transition-all duration-300 ${
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center font-display font-black text-xl transition-all duration-300 ${
                                 isDark
-                                    ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]'
-                                    : 'bg-black text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]'
+                                    ? 'bg-white text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_8px_20px_rgba(255,255,255,0.15)]'
+                                    : 'bg-black text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_4px_14px_rgba(0,0,0,0.12)]'
                             }`}
                         >
                             <span>S</span>
@@ -113,7 +113,7 @@ export default function NotFound() {
                         <div>
                             <div className="flex items-center gap-2">
                                 <span
-                                    className={`font-extrabold text-sm tracking-tight uppercase ${
+                                    className={`font-display font-extrabold text-sm tracking-tight uppercase ${
                                         isDark ? 'text-white' : 'text-black'
                                     }`}
                                 >
@@ -130,7 +130,7 @@ export default function NotFound() {
                                 </span>
                             </div>
                             <p
-                                className={`text-[10px] font-mono tracking-widest uppercase ${
+                                className={`text-[10px] font-mono tracking-[0.18em] uppercase ${
                                     isDark ? 'text-neutral-400' : 'text-neutral-500'
                                 }`}
                             >
@@ -146,8 +146,8 @@ export default function NotFound() {
                         onClick={toggleTheme}
                         className={`p-2.5 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
                             isDark
-                                ? 'bg-white/5 hover:bg-white/10 text-neutral-200 border-white/10'
-                                : 'bg-black/5 hover:bg-black/10 text-neutral-800 border-black/10'
+                                ? 'bg-white/5 hover:bg-white/10 text-neutral-200 border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
+                                : 'bg-black/5 hover:bg-black/10 text-neutral-800 border-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]'
                         }`}
                         title={isDark ? 'Beralih ke Light Mode' : 'Beralih ke Dark Mode'}
                     >
@@ -188,18 +188,18 @@ export default function NotFound() {
                         }`}
                     >
                         <div
-                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-mono ${
+                            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-mono ${
                                 isDark
-                                    ? 'bg-rose-500/10 border-rose-500/30 text-rose-400'
-                                    : 'bg-rose-50 border-rose-200 text-rose-700'
+                                    ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
+                                    : 'bg-rose-50 border-rose-200 text-rose-700 shadow-xs'
                             }`}
                         >
                             <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-                            <span className="tracking-wider font-bold">STATUS://404_PAGE_NOT_FOUND</span>
+                            <span className="tracking-wide font-bold">STATUS://404_PAGE_NOT_FOUND</span>
                         </div>
                         <div
-                            className={`text-right text-[11px] font-mono tracking-widest ${
-                                isDark ? 'text-neutral-400' : 'text-neutral-600'
+                            className={`text-right text-[11px] font-mono tracking-[0.2em] font-medium ${
+                                isDark ? 'text-neutral-400' : 'text-neutral-500'
                             }`}
                         >
                             未検出 &bull; 迷子 &bull; リルート
@@ -207,40 +207,31 @@ export default function NotFound() {
                     </div>
 
                     {/* Split Grid: Left Text + Right Love Artwork Frame */}
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
                         
                         {/* Left Content (7 cols on desktop) */}
                         <div className="lg:col-span-7 space-y-6">
-                            <div className="space-y-2">
-                                <div className="text-6xl sm:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-none font-mono opacity-90">
+                            <div className="space-y-3">
+                                <div className="text-6xl sm:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-none font-display opacity-90">
                                     404
                                 </div>
                                 <h1
-                                    className={`text-2xl sm:text-4xl font-black tracking-tight uppercase ${
+                                    className={`font-display text-2xl sm:text-4xl font-black tracking-tight uppercase leading-tight ${
                                         isDark ? 'text-white' : 'text-black'
                                     }`}
+                                    style={{ textWrap: 'balance' }}
                                 >
                                     Sinyal Tersesat di Luar Radar
                                 </h1>
 
                                 {/* Dynamic Typing Effect 404 Headline */}
                                 <div
-                                    className={`text-xs sm:text-base font-mono font-medium min-h-[2.5rem] flex items-center ${
+                                    className={`text-xs sm:text-base font-mono font-medium min-h-[2.2rem] flex items-center ${
                                         isDark ? 'text-neutral-300' : 'text-neutral-700'
                                     }`}
                                 >
-                                    <span
-                                        className={`mr-1 ${
-                                            isDark ? 'text-neutral-400' : 'text-neutral-500'
-                                        }`}
-                                    >
-                                        [
-                                    </span>
-                                    <span
-                                        className={`font-semibold ${
-                                            isDark ? 'text-white' : 'text-black'
-                                        }`}
-                                    >
+                                    <span className={`mr-1 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>[</span>
+                                    <span className={`font-semibold ${isDark ? 'text-white' : 'text-black'}`}>
                                         {currentText}
                                     </span>
                                     <span
@@ -250,22 +241,16 @@ export default function NotFound() {
                                                 : 'bg-black shadow-[0_0_8px_rgba(0,0,0,0.4)]'
                                         }`}
                                     />
-                                    <span
-                                        className={`ml-1 ${
-                                            isDark ? 'text-neutral-400' : 'text-neutral-500'
-                                        }`}
-                                    >
-                                        ]
-                                    </span>
+                                    <span className={`ml-1 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>]</span>
                                 </div>
                             </div>
 
                             {/* Free Thought / Thoughtful Custom Paragraphs */}
                             <div
-                                className={`p-6 sm:p-7 rounded-3xl border relative overflow-hidden backdrop-blur-md transition-all duration-500 space-y-3 ${
+                                className={`p-6 sm:p-7 rounded-2xl border relative overflow-hidden backdrop-blur-md transition-all duration-300 space-y-3 ${
                                     isDark
-                                        ? 'bg-white/[0.03] border-white/10'
-                                        : 'bg-black/[0.03] border-black/10 shadow-xs'
+                                        ? 'bg-[#111115]/70 border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
+                                        : 'bg-white/80 border-black/10 shadow-[0_2px_8px_rgba(0,0,0,0.03)]'
                                 }`}
                             >
                                 <div
@@ -277,7 +262,7 @@ export default function NotFound() {
                                 </div>
                                 <p
                                     className={`text-xs sm:text-sm leading-relaxed font-sans ${
-                                        isDark ? 'text-neutral-200' : 'text-neutral-800'
+                                        isDark ? 'text-neutral-300' : 'text-neutral-700'
                                     }`}
                                 >
                                     “Kadang kita gak sengaja melangkah ke rute yang belum dibangun atau tautan yang sudah bertransformasi. Tapi dalam rekayasa data ataupun kehidupan, jalan buntu hanyalah pengingat untuk mengarahkan kembali kompas ke tujuan utama.”
@@ -292,10 +277,10 @@ export default function NotFound() {
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="flex flex-wrap items-center gap-3 pt-2">
+                            <div className="flex flex-wrap items-center gap-3 pt-1">
                                 <Link
                                     href="/"
-                                    className={`px-5 py-3 rounded-xl text-xs font-mono font-bold transition-all shadow-md flex items-center gap-2 active:scale-95 ${
+                                    className={`px-5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all shadow-md flex items-center gap-2 active:scale-[0.98] ${
                                         isDark
                                             ? 'bg-white text-black hover:bg-neutral-200'
                                             : 'bg-black text-white hover:bg-neutral-800'
@@ -306,7 +291,7 @@ export default function NotFound() {
                                 </Link>
                                 <Link
                                     href="/dashboard"
-                                    className={`px-5 py-3 border rounded-xl text-xs font-mono font-bold transition-colors flex items-center gap-2 ${
+                                    className={`px-5 py-2.5 border rounded-xl text-xs font-mono font-bold transition-colors flex items-center gap-2 active:scale-[0.98] ${
                                         isDark
                                             ? 'bg-white/5 hover:bg-white/15 text-white border-white/15'
                                             : 'bg-black/5 hover:bg-black/15 text-black border-black/15'
@@ -321,48 +306,53 @@ export default function NotFound() {
                         {/* Right Love Artwork Character Frame (5 cols on desktop) */}
                         <div className="lg:col-span-5 flex justify-center lg:justify-end">
                             <div
-                                className={`relative w-full max-w-[300px] sm:max-w-[340px] rounded-3xl border p-3 shadow-2xl group transition-all duration-500 overflow-hidden ${
+                                className={`relative w-full max-w-[280px] sm:max-w-[310px] rounded-3xl border p-3.5 shadow-2xl group transition-all duration-500 overflow-hidden ${
                                     isDark
-                                        ? 'bg-[#0e0e12] border-white/15 hover:border-white/40'
-                                        : 'bg-white border-black/15 hover:border-black/40 shadow-xl'
+                                        ? 'bg-[#0e0e12] border-white/15 hover:border-white/35 shadow-[0_12px_40px_rgba(0,0,0,0.6)]'
+                                        : 'bg-white border-black/15 hover:border-black/35 shadow-[0_12px_36px_rgba(0,0,0,0.08)]'
                                 }`}
                             >
                                 {/* Top Tech Bar */}
                                 <div
-                                    className={`flex items-center justify-between px-2.5 py-1.5 mb-2 rounded-xl border text-[9px] font-mono ${
+                                    className={`flex items-center justify-between px-2.5 py-1.5 mb-2.5 rounded-xl border text-[9px] font-mono ${
                                         isDark
                                             ? 'bg-white/5 border-white/10 text-neutral-400'
                                             : 'bg-black/5 border-black/10 text-neutral-600'
                                     }`}
                                 >
                                     <span
-                                        className={`flex items-center gap-1 font-bold tracking-wider ${
+                                        className={`flex items-center gap-1.5 font-bold ${
                                             isDark ? 'text-white' : 'text-black'
                                         }`}
                                     >
                                         <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse"></span> LOVE.SYS
                                     </span>
-                                    <span>愛 // COMPANION</span>
+                                    <span className="font-semibold tracking-wider">愛 // COMPANION</span>
                                 </div>
 
                                 {/* Love.png Image Frame with Grayscale-to-Color Aesthetic */}
                                 <div
                                     className={`relative rounded-2xl overflow-hidden aspect-[4/5] border ${
-                                        isDark
-                                            ? 'bg-[#050507] border-white/10'
-                                            : 'bg-[#f0f0f2] border-black/10'
+                                        isDark ? 'bg-[#050507] border-white/10' : 'bg-[#f0f0f2] border-black/10'
                                     }`}
                                 >
-                                    <img
-                                        src="/love.png"
-                                        alt="Love Character Art"
-                                        className="w-full h-full object-cover object-top filter grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                                        onError={(e) => {
-                                            e.target.src = '/chisa.png';
-                                        }}
-                                    />
+                                    <picture>
+                                        <source srcSet="/love.webp" type="image/webp" />
+                                        <img
+                                            src="/love.png"
+                                            alt="Love Character Art"
+                                            width="300"
+                                            height="375"
+                                            loading="eager"
+                                            decoding="async"
+                                            className="w-full h-full object-cover object-top filter grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                                            onError={(e) => {
+                                                e.target.src = '/chisa.png';
+                                            }}
+                                        />
+                                    </picture>
                                     <div
-                                        className={`absolute inset-0 bg-gradient-to-t via-transparent to-transparent opacity-80 pointer-events-none ${
+                                        className={`absolute inset-0 bg-gradient-to-t via-transparent to-transparent opacity-70 pointer-events-none ${
                                             isDark ? 'from-[#0e0e12]' : 'from-white'
                                         }`}
                                     />
@@ -379,9 +369,9 @@ export default function NotFound() {
                                             RE_ROUTING_AI
                                         </span>
                                         <span
-                                            className={`text-[8px] font-mono px-1.5 py-0.5 rounded border ${
+                                            className={`text-[8px] font-mono px-2 py-0.5 rounded border ${
                                                 isDark
-                                                    ? 'text-rose-400 bg-black/70 border-rose-500/30 font-bold'
+                                                    ? 'text-rose-400 bg-black/70 border-rose-500/30'
                                                     : 'text-rose-700 bg-rose-50 border-rose-300 font-bold'
                                             }`}
                                         >
@@ -392,11 +382,11 @@ export default function NotFound() {
 
                                 {/* Bottom Tech Caption */}
                                 <div
-                                    className={`mt-2.5 px-2 flex items-center justify-between text-[8px] font-mono uppercase tracking-widest ${
+                                    className={`mt-2.5 px-1 flex items-center justify-between text-[8px] font-mono uppercase tracking-[0.15em] ${
                                         isDark ? 'text-neutral-400' : 'text-neutral-500'
                                     }`}
                                 >
-                                    <span>LOST // RESCUE_PROTOCOL</span>
+                                    <span>LOST // RESCUE_SYS</span>
                                     <span>V2.6.4</span>
                                 </div>
                             </div>
@@ -410,26 +400,18 @@ export default function NotFound() {
             <footer
                 className={`border-t py-8 px-4 sm:px-8 lg:px-16 text-xs font-mono transition-colors duration-500 ${
                     isDark
-                        ? 'border-white/10 bg-[#060608] text-neutral-400'
-                        : 'border-black/10 bg-[#f0f0f2] text-neutral-600'
+                        ? 'border-white/10 bg-[#070709] text-neutral-400'
+                        : 'border-black/10 bg-[#f4f4f6] text-neutral-600'
                 }`}
             >
                 <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div>
-                        <p
-                            className={`font-bold tracking-wide ${
-                                isDark ? 'text-white' : 'text-black'
-                            }`}
-                        >
+                        <p className={`font-display font-bold tracking-wide ${isDark ? 'text-white' : 'text-black'}`}>
                             MUHAMMAD HAFIZH AZZASAFAH (SAFAH) &copy; 2026
                         </p>
                     </div>
 
-                    <div
-                        className={`flex items-center gap-4 ${
-                            isDark ? 'text-neutral-400' : 'text-neutral-600'
-                        }`}
-                    >
+                    <div className={`flex items-center gap-4 ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                         <Link
                             href="/"
                             className={`hover:underline font-bold ${

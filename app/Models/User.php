@@ -64,4 +64,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Faq::class)->orderBy('order_index');
     }
+
+    public function freelanceProjects(): HasMany
+    {
+        return $this->hasMany(FreelanceProject::class)->orderBy('order_index');
+    }
 }

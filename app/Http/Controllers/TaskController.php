@@ -60,6 +60,7 @@ class TaskController extends Controller
             'portfolio_summary' => 'nullable|string',
             'github_url' => 'nullable|url',
             'live_url' => 'nullable|url',
+            'button_display_mode' => 'nullable|in:both,live,github',
             'tech_stack' => 'nullable|array',
         ]);
 
@@ -75,6 +76,7 @@ class TaskController extends Controller
             'portfolio_summary' => 'nullable|string',
             'github_url' => 'nullable|string',
             'live_url' => 'nullable|string',
+            'button_display_mode' => 'nullable|in:both,live,github',
             'tech_stack' => 'nullable|string',
         ]);
 
@@ -88,6 +90,7 @@ class TaskController extends Controller
             'portfolio_summary' => $validated['portfolio_summary'] ?? $task->portfolio_summary,
             'github_url' => $validated['github_url'] ?? $task->github_url,
             'live_url' => $validated['live_url'] ?? $task->live_url,
+            'button_display_mode' => $validated['button_display_mode'] ?? ($task->button_display_mode ?: 'both'),
             'tech_stack' => $techStackArray ?? $task->tech_stack,
         ]);
 

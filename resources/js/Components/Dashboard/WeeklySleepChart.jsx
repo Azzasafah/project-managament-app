@@ -22,14 +22,14 @@ export default function WeeklySleepChart({ chartLabels, chartSleepData, onViewDe
                         data: chartSleepData,
                         backgroundColor: function (context) {
                             const val = context.dataset.data[context.dataIndex];
-                            if (val >= 7) return '#10b981'; // emerald-500
-                            if (val >= 6) return '#6366f1'; // indigo-500
-                            if (val > 0) return '#f43f5e';  // rose-500
-                            return '#e2e8f0'; // slate-200 (hari kosong)
+                            if (val >= 7) return '#10b981'; // emerald
+                            if (val >= 6) return '#18181b'; // obsidian black
+                            if (val > 0) return '#f43f5e';  // rose
+                            return '#e4e4e7'; // empty slate
                         },
                         borderRadius: 8,
                         borderSkipped: false,
-                        barThickness: 18,
+                        barThickness: 16,
                     },
                 ],
             },
@@ -39,10 +39,11 @@ export default function WeeklySleepChart({ chartLabels, chartSleepData, onViewDe
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#1e293b',
+                        backgroundColor: '#09090b',
                         padding: 12,
-                        titleFont: { size: 13, weight: 'bold' },
-                        bodyFont: { size: 12 },
+                        titleFont: { size: 12, weight: 'bold', family: 'JetBrains Mono' },
+                        bodyFont: { size: 12, family: 'Plus Jakarta Sans' },
+                        cornerRadius: 10,
                         callbacks: { label: (c) => (c.raw > 0 ? `${c.raw} Jam` : 'Belum ada log') },
                     },
                 },
@@ -50,13 +51,14 @@ export default function WeeklySleepChart({ chartLabels, chartSleepData, onViewDe
                     y: {
                         beginAtZero: true,
                         max: 10,
-                        grid: { color: '#f1f5f9', drawBorder: false },
+                        grid: { color: '#f4f4f5', drawBorder: false },
                         border: { display: false },
-                        ticks: { stepSize: 2, padding: 10 },
+                        ticks: { stepSize: 2, padding: 8, font: { family: 'JetBrains Mono', size: 10 } },
                     },
                     x: {
                         grid: { display: false },
                         border: { display: false },
+                        ticks: { font: { family: 'JetBrains Mono', size: 10, weight: 'bold' } },
                     },
                 },
             },
@@ -70,17 +72,18 @@ export default function WeeklySleepChart({ chartLabels, chartSleepData, onViewDe
     }, [chartLabels, chartSleepData]);
 
     return (
-        <div className="bg-white p-6 rounded-3xl shadow-soft border border-slate-100 lg:col-span-2 flex flex-col">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs lg:col-span-2 flex flex-col font-sans">
             <div className="flex justify-between items-center mb-5">
                 <div>
-                    <h3 className="font-bold text-slate-800 text-lg">Tren Tidur Mingguan</h3>
-                    <p className="text-sm text-slate-400">Modul Wellbeing (Target 7.5 Jam)</p>
+                    <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-widest">WELLBEING // SLEEP_METRICS</span>
+                    <h3 className="font-display font-black text-slate-900 text-lg">Tren Tidur Mingguan</h3>
+                    <p className="text-xs text-slate-500 font-sans">Target harian 7.5 jam tidur berkualitas</p>
                 </div>
                 <button
                     onClick={onViewDetail}
-                    className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 cursor-pointer"
+                    className="text-xs font-mono font-bold text-neutral-700 hover:text-black transition-colors cursor-pointer active:scale-95"
                 >
-                    Lihat Detail
+                    Lihat Detail &rarr;
                 </button>
             </div>
             <div className="flex-1 relative min-h-[220px] w-full">
