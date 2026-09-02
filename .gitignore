@@ -53,6 +53,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# AI Agent & Assistant Files (NEVER COMMIT)
+/.agents
+/.gemini
+/.claude
+/.cursor
+
 # IDE & Editor Configs
 /.fleet
 /.idea
