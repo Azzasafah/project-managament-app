@@ -37,8 +37,8 @@ auth.json
 !/storage/logs/.gitignore
 /storage/pail
 
-# Vite & Build Assets
-/public/build
+# Vite & Build Assets (Uncommented for shared hosting/cPanel deployment)
+# /public/build
 /public/hot
 /public/storage
 

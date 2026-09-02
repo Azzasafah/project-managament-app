@@ -1,0 +1,80 @@
+{
+  "_vendor-Dxy9IOzN.js": {
+    "file": "assets/vendor-Dxy9IOzN.js",
+    "name": "vendor"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-D_bgeWMn.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/Pages/Auth/Login.jsx": {
+    "file": "assets/Login-BCWI94tc.js",
+    "name": "Login",
+    "src": "resources/js/Pages/Auth/Login.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor-Dxy9IOzN.js"
+    ]
+  },
+  "resources/js/Pages/Auth/Register.jsx": {
+    "file": "assets/Register-BmGeWJJL.js",
+    "name": "Register",
+    "src": "resources/js/Pages/Auth/Register.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor-Dxy9IOzN.js"
+    ]
+  },
+  "resources/js/Pages/Dashboard.jsx": {
+    "file": "assets/Dashboard-CoTN9x4T.js",
+    "name": "Dashboard",
+    "src": "resources/js/Pages/Dashboard.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor-Dxy9IOzN.js"
+    ]
+  },
+  "resources/js/Pages/Errors/404.jsx": {
+    "file": "assets/404-D2_CcyQ1.js",
+    "name": "404",
+    "src": "resources/js/Pages/Errors/404.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor-Dxy9IOzN.js"
+    ]
+  },
+  "resources/js/Pages/Portfolio/Index.jsx": {
+    "file": "assets/Index-B2Bl6lK_.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Portfolio/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor-Dxy9IOzN.js"
+    ]
+  },
+  "resources/js/app.jsx": {
+    "file": "assets/app-DRpEUOgI.js",
+    "name": "app",
+    "src": "resources/js/app.jsx",
+    "isEntry": true,
+    "imports": [
+      "_vendor-Dxy9IOzN.js"
+    ],
+    "dynamicImports": [
+      "resources/js/Pages/Auth/Login.jsx",
+      "resources/js/Pages/Auth/Register.jsx",
+      "resources/js/Pages/Dashboard.jsx",
+      "resources/js/Pages/Errors/404.jsx",
+      "resources/js/Pages/Portfolio/Index.jsx"
+    ],
+    "css": [
+      "assets/app-D_bgeWMn.css"
+    ]
+  }
+}
