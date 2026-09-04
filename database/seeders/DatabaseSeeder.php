@@ -19,12 +19,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Admin User
+        // 1. Admin User (Credentials configured via .env)
         $user = User::updateOrCreate(
-            ['email' => 'azzasafah0408@gmail.com'],
+            ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
             [
-                'name' => 'Muhammad Hafizh Azzasafah',
-                'password' => Hash::make('safah04082001'),
+                'name' => env('ADMIN_NAME', 'Admin User'),
+                'password' => Hash::make(env('ADMIN_PASSWORD', 'password')),
                 'email_verified_at' => now(),
             ]
         );
