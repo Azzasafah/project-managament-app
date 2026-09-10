@@ -1,25 +1,45 @@
 import React from 'react';
 import { Link, router } from '@inertiajs/react';
 
-export default function Header({ currentTab, navItems, currentDate, onQuickAdd }) {
+export default function Header({
+    currentTab,
+    navItems,
+    currentDate,
+    onQuickAdd,
+    onToggleMobileSidebar,
+    isSidebarCollapsed = false,
+    onToggleDesktopSidebar,
+}) {
     const activeItem = navItems.find((n) => n.id === currentTab);
 
     return (
         <>
             {/* Mobile Top Header */}
             <header className="md:hidden glass sticky top-0 z-30 px-4 h-16 flex items-center justify-between border-b border-slate-200/70 shadow-xs">
-                <div className="flex items-center gap-2.5">
-                    <Link href="/" className="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center font-display font-black text-base shadow-sm">
-                        <span>S</span>
+                <div className="flex items-center gap-3">
+                    {/* Hamburger Button for Mobile Drawer */}
+                    <button
+                        type="button"
+                        onClick={onToggleMobileSidebar}
+                        className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center text-lg active:scale-90 transition-all cursor-pointer shrink-0 shadow-2xs"
+                        title="Buka Navigasi Hamburger"
+                    >
+                        <i className="ph-bold ph-list"></i>
+                    </button>
+
+                    <Link href="/" className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center font-display font-black text-base shadow-sm shrink-0">
+                            <span>S</span>
+                        </div>
+                        <div>
+                            <span className="font-display font-extrabold text-sm text-slate-900 tracking-tight block leading-tight">
+                                Safah<span className="text-neutral-500">Workspace</span>
+                            </span>
+                            <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-neutral-500 font-mono">
+                                {activeItem?.labelMobile || 'Home'}
+                            </span>
+                        </div>
                     </Link>
-                    <div>
-                        <span className="font-display font-extrabold text-sm text-slate-900 tracking-tight block leading-tight">
-                            Safah<span className="text-neutral-500">Workspace</span>
-                        </span>
-                        <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-neutral-500 font-mono">
-                            {activeItem?.labelMobile || 'Home'}
-                        </span>
-                    </div>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -49,12 +69,25 @@ export default function Header({ currentTab, navItems, currentDate, onQuickAdd }
 
             {/* Desktop Top Header */}
             <header className="hidden md:flex items-center justify-between px-8 h-20 bg-white/80 backdrop-blur-md sticky top-0 z-20 border-b border-slate-200/60">
-                <div>
-                    <h2 className="font-display text-2xl font-black text-slate-900 capitalize tracking-tight">
-                        {activeItem?.label || 'Workspace'}
-                    </h2>
-                    <p className="text-xs text-slate-500 font-mono font-medium mt-0.5">{currentDate}</p>
+                <div className="flex items-center gap-3">
+                    {/* Desktop Sidebar Collapse Toggle Button */}
+                    <button
+                        type="button"
+                        onClick={onToggleDesktopSidebar}
+                        className="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-lg active:scale-95 transition-all cursor-pointer shadow-2xs"
+                        title={isSidebarCollapsed ? "Buka Sidebar Penuh" : "Ciutkan Sidebar"}
+                    >
+                        <i className={`ph-bold ${isSidebarCollapsed ? 'ph-sidebar' : 'ph-sidebar-simple'}`}></i>
+                    </button>
+
+                    <div>
+                        <h2 className="font-display text-2xl font-black text-slate-900 capitalize tracking-tight">
+                            {activeItem?.label || 'Workspace'}
+                        </h2>
+                        <p className="text-xs text-slate-500 font-mono font-medium mt-0.5">{currentDate}</p>
+                    </div>
                 </div>
+
                 <div className="flex items-center gap-3">
                     <Link
                         href="/"

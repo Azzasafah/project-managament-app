@@ -69,6 +69,24 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/freelance-projects/{freelanceProject}', [FreelanceProjectController::class, 'update'])->name('freelance-projects.update');
     Route::post('/freelance-projects/{freelanceProject}/toggle', [FreelanceProjectController::class, 'toggle'])->name('freelance-projects.toggle');
     Route::delete('/freelance-projects/{freelanceProject}', [FreelanceProjectController::class, 'destroy'])->name('freelance-projects.destroy');
+
+    // SafahFlow (Bootcamp Sessions, Portfolio Projects, Spiritual & Chores)
+    Route::post('/safahflow/sessions', [\App\Http\Controllers\SafahFlowController::class, 'storeSession'])->name('safahflow.sessions.store');
+    Route::post('/safahflow/sessions/{session}/toggle', [\App\Http\Controllers\SafahFlowController::class, 'toggleSessionAttendance'])->name('safahflow.sessions.toggle');
+    Route::put('/safahflow/sessions/{session}', [\App\Http\Controllers\SafahFlowController::class, 'updateSession'])->name('safahflow.sessions.update');
+    Route::delete('/safahflow/sessions/{session}', [\App\Http\Controllers\SafahFlowController::class, 'destroySession'])->name('safahflow.sessions.destroy');
+
+    Route::post('/safahflow/projects', [\App\Http\Controllers\SafahFlowController::class, 'storeProject'])->name('safahflow.projects.store');
+    Route::put('/safahflow/projects/{project}', [\App\Http\Controllers\SafahFlowController::class, 'updateProject'])->name('safahflow.projects.update');
+    Route::delete('/safahflow/projects/{project}', [\App\Http\Controllers\SafahFlowController::class, 'destroyProject'])->name('safahflow.projects.destroy');
+
+    Route::post('/safahflow/milestones/{milestone}/toggle', [\App\Http\Controllers\SafahFlowController::class, 'toggleMilestone'])->name('safahflow.milestones.toggle');
+    Route::post('/safahflow/projects/{project}/milestones', [\App\Http\Controllers\SafahFlowController::class, 'storeMilestone'])->name('safahflow.milestones.store');
+    Route::delete('/safahflow/milestones/{milestone}', [\App\Http\Controllers\SafahFlowController::class, 'destroyMilestone'])->name('safahflow.milestones.destroy');
+    Route::post('/safahflow/spiritual/toggle', [\App\Http\Controllers\SafahFlowController::class, 'toggleSpiritual'])->name('safahflow.spiritual.toggle');
+    Route::post('/safahflow/chores/toggle', [\App\Http\Controllers\SafahFlowController::class, 'toggleChore'])->name('safahflow.chores.toggle');
+    Route::post('/safahflow/chores/pomodoro', [\App\Http\Controllers\SafahFlowController::class, 'logPomodoro'])->name('safahflow.chores.pomodoro');
+    Route::post('/safahflow/daily-log', [\App\Http\Controllers\SafahFlowController::class, 'updateDailyLog'])->name('safahflow.dailyLog.update');
 });
 
 // Fallback 404 Not Found Route

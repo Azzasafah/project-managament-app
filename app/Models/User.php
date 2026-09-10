@@ -69,4 +69,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(FreelanceProject::class)->orderBy('order_index');
     }
+
+    public function bootcampAttendances(): HasMany
+    {
+        return $this->hasMany(BootcampAttendance::class);
+    }
+
+    public function dailyLogs(): HasMany
+    {
+        return $this->hasMany(DailyLog::class)->orderBy('log_date', 'desc');
+    }
+
+    public function spiritualLogs(): HasMany
+    {
+        return $this->hasMany(SpiritualLog::class)->orderBy('log_date', 'desc');
+    }
+
+    public function choreLogs(): HasMany
+    {
+        return $this->hasMany(ChoreLog::class)->orderBy('log_date', 'desc');
+    }
 }
+

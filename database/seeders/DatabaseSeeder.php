@@ -19,15 +19,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Admin User (Credentials configured via .env)
-        $user = User::updateOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
-            [
-                'name' => env('ADMIN_NAME', 'Admin User'),
-                'password' => Hash::make(env('ADMIN_PASSWORD', 'password')),
-                'email_verified_at' => now(),
-            ]
-        );
+        // 1. Admin User (Kredensial disamarkan melalui UserSeeder & .env)
+        $this->call(UserSeeder::class);
+        $user = User::first();
 
         // 2. Tasks & Portfolio Projects (from CV)
         $tasks = [
@@ -481,5 +475,9 @@ class DatabaseSeeder extends Seeder
         foreach ($faqs as $faq) {
             $user->faqs()->create($faq);
         }
+
+        // 8. SafahFlow (ADE Bootcamp 36 Sesi, 5 Projects, Spiritual & Chores)
+        $this->call(SafahFlowMasterSeeder::class);
     }
 }
+

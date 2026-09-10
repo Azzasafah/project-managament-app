@@ -17,6 +17,7 @@ import LearningJournalView from '@/Components/Learning/LearningJournalView';
 import SpiritualView from '@/Components/Spiritual/SpiritualView';
 import WellbeingView from '@/Components/Wellbeing/WellbeingView';
 import PortfolioManagerView from '@/Components/PortfolioManager/PortfolioManagerView';
+import SafahFlowView from '@/Components/SafahFlow/SafahFlowView';
 
 // Modal Components
 import TaskModal from '@/Components/Modals/TaskModal';
@@ -24,6 +25,9 @@ import PortfolioModal from '@/Components/Modals/PortfolioModal';
 import CertificationModal from '@/Components/Modals/CertificationModal';
 import FaqModal from '@/Components/Modals/FaqModal';
 import FreelanceProjectModal from '@/Components/Modals/FreelanceProjectModal';
+import ProjectModal from '@/Components/Modals/ProjectModal';
+import SessionEditModal from '@/Components/Modals/SessionEditModal';
+import MilestoneModal from '@/Components/Modals/MilestoneModal';
 import JournalModal from '@/Components/Modals/JournalModal';
 import ReadJournalModal from '@/Components/Modals/ReadJournalModal';
 import KajianModal from '@/Components/Modals/KajianModal';
@@ -32,6 +36,7 @@ import SleepModal from '@/Components/Modals/SleepModal';
 import RefreshingModal from '@/Components/Modals/RefreshingModal';
 import ConfirmDeleteModal from '@/Components/Modals/ConfirmDeleteModal';
 import SplashScreenModal from '@/Components/Modals/SplashScreenModal';
+import SleepReminderModal from '@/Components/Modals/SleepReminderModal';
 
 // Utils
 import { toInputDateFormat, isDoneToday } from '@/Utils/dateHelpers';
@@ -52,14 +57,40 @@ export default function Dashboard({
     certifications = [],
     faqs = [],
     freelanceProjects = [],
+    deProjects = [],
+    overallDeProgress = 0,
+    bootcampSessions = [],
+    nextLiveClass = null,
+    todayDailyLog = null,
+    todaySpiritualLog = null,
+    todayChoreLog = null,
+    safahFlowStats = { total_sessions: 36, attended_count: 7, watched_count: 0, progress_pct: 19 },
 }) {
     const { auth } = usePage().props;
     const user = auth?.user || { name: 'Admin User', email: 'admin@personalhub.test' };
 
-    // Navigation state
+    // Navigation state & Hamburger Sidebar Controls
     const [currentTab, setCurrentTab] = useState('dashboard');
     const [currentTime, setCurrentTime] = useState('00:00:00');
     const [currentDate, setCurrentDate] = useState('');
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+    const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(() => {
+        try {
+            return localStorage.getItem('safahflow_sidebar_collapsed') === 'true';
+        } catch (e) {
+            return false;
+        }
+    });
+
+    const handleToggleDesktopSidebar = () => {
+        setDesktopSidebarCollapsed((prev) => {
+            const next = !prev;
+            try {
+                localStorage.setItem('safahflow_sidebar_collapsed', String(next));
+            } catch (e) {}
+            return next;
+        });
+    };
 
     // Waifu Link state
     const [waifuImage, setWaifuImage] = useState(
@@ -81,6 +112,50 @@ export default function Dashboard({
         if (typeof window !== 'undefined') {
             sessionStorage.setItem('safah_splash_shown', 'true');
         }
+    };
+
+    // 22:00 WIB Hard-Stop Sleep Reminder
+    const [sleepReminderOpen, setSleepReminderOpen] = useState(false);
+
+    useEffect(() => {
+        const checkSleepTime = () => {
+            const now = new Date();
+            const hours = now.getHours();
+            const todayKey = now.toISOString().split('T')[0];
+            const snoozeKey = 'safah_sleep_snoozed_until';
+            const snoozedUntil = typeof window !== 'undefined' ? localStorage.getItem(snoozeKey) : null;
+
+            if (snoozedUntil && Date.now() < parseInt(snoozedUntil)) {
+                return;
+            }
+
+            // Trigger at 22:00 WIB onwards (until 04:00 AM) if not dismissed tonight
+            if ((hours >= 22 || hours < 4) && typeof window !== 'undefined' && !sessionStorage.getItem('safah_sleep_reminded_' + todayKey)) {
+                setSleepReminderOpen(true);
+                addToast('🌙 Sudah pukul 22.00 WIB! Waktunya hard-stop: matikan IDE dan istirahat tidur.', 'info');
+            }
+        };
+
+        checkSleepTime();
+        const sleepInterval = setInterval(checkSleepTime, 30000);
+        return () => clearInterval(sleepInterval);
+    }, []);
+
+    const handleCloseSleepReminder = () => {
+        const todayKey = new Date().toISOString().split('T')[0];
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('safah_sleep_reminded_' + todayKey, 'true');
+        }
+        setSleepReminderOpen(false);
+        addToast('Selamat beristirahat! Matikan workstation untuk tidur nyenyak 🛌', 'success');
+    };
+
+    const handleSnoozeSleepReminder = () => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('safah_sleep_snoozed_until', String(Date.now() + 10 * 60 * 1000));
+        }
+        setSleepReminderOpen(false);
+        addToast('Pengingat tidur di-snooze 10 menit.', 'info');
     };
 
     // Global Toasts
@@ -152,6 +227,21 @@ export default function Dashboard({
         form: { title: '', category: 'Gaming', icon: 'ph-game-controller', color: 'emerald' },
     });
 
+    const [projectModal, setProjectModal] = useState({
+        open: false,
+        project: null,
+    });
+
+    const [sessionEditModal, setSessionEditModal] = useState({
+        open: false,
+        session: null,
+    });
+
+    const [milestoneModal, setMilestoneModal] = useState({
+        open: false,
+        project: null,
+    });
+
     // Confirm Delete Modal State
     const [deleteModal, setDeleteModal] = useState({
         open: false,
@@ -165,6 +255,7 @@ export default function Dashboard({
     // Navigation definitions
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', labelMobile: 'Home', icon: 'ph-bold ph-squares-four' },
+        { id: 'safah_flow', label: 'SafahFlow', labelMobile: 'SafahFlow', icon: 'ph-bold ph-graduation-cap' },
         { id: 'projects', label: 'Projects & Kanban', labelMobile: 'Tasks', icon: 'ph-bold ph-kanban' },
         { id: 'portfolio_manager', label: 'Portfolio Content', labelMobile: 'Porto', icon: 'ph-bold ph-certificate' },
         { id: 'learning', label: 'Learning Journal', labelMobile: 'Learn', icon: 'ph-bold ph-notebook' },
@@ -482,22 +573,29 @@ export default function Dashboard({
             {/* Global Toasts */}
             <ToastContainer toasts={toasts} />
 
-            {/* Desktop Sidebar */}
+            {/* Sidebar (Mobile Slide-out Drawer & Desktop Collapsible) */}
             <Sidebar
                 currentTab={currentTab}
                 setCurrentTab={setCurrentTab}
                 navItems={navItems}
                 user={user}
+                mobileOpen={mobileSidebarOpen}
+                onCloseMobile={() => setMobileSidebarOpen(false)}
+                isCollapsed={desktopSidebarCollapsed}
+                onToggleCollapse={handleToggleDesktopSidebar}
             />
 
             {/* Main Content Area */}
             <div className="flex flex-col flex-1 min-w-0 relative bg-slate-100/60 overflow-hidden">
-                {/* Header for Mobile & Desktop */}
+                {/* Header with Mobile Hamburger & Desktop Sidebar Toggles */}
                 <Header
                     currentTab={currentTab}
                     navItems={navItems}
                     currentDate={currentDate}
                     onQuickAdd={handleQuickAdd}
+                    onToggleMobileSidebar={() => setMobileSidebarOpen((prev) => !prev)}
+                    isSidebarCollapsed={desktopSidebarCollapsed}
+                    onToggleDesktopSidebar={handleToggleDesktopSidebar}
                 />
 
                 {/* Viewport Scroll Container */}
@@ -515,6 +613,44 @@ export default function Dashboard({
                                 onFetchWaifu={fetchWaifu}
                                 onOpenTerminal={() => setCurrentTab('projects')}
                             />
+
+                            {/* SafahFlow Quick Alert & Next Live Class Banner */}
+                            <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div className="flex items-center gap-3.5">
+                                    <div className="w-11 h-11 rounded-2xl bg-black text-white flex items-center justify-center text-xl shrink-0 shadow-sm">
+                                        <i className="ph-bold ph-graduation-cap"></i>
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-extrabold bg-rose-100 text-rose-700 uppercase">
+                                                LIVE KELAS TERDEKAT
+                                            </span>
+                                            <span className="text-[11px] font-mono font-bold text-slate-500">
+                                                {nextLiveClass ? `${nextLiveClass.day_name}, ${nextLiveClass.scheduled_date} • ${nextLiveClass.start_time} WIB` : 'Terjadwal'}
+                                            </span>
+                                        </div>
+                                        <p className="font-display font-extrabold text-sm text-slate-900 mt-0.5">
+                                            {nextLiveClass ? `${nextLiveClass.session_name}: ${nextLiveClass.topic}` : 'Kurikulum ADE Boost 36 Sesi'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <div className="text-right hidden sm:block">
+                                        <p className="text-[10px] font-mono font-bold text-neutral-400 uppercase">Progres Bootcamp</p>
+                                        <p className="text-xs font-mono font-bold text-slate-900">
+                                            {safahFlowStats.attended_count} / {safahFlowStats.total_sessions || bootcampSessions.length} Sesi ({safahFlowStats.progress_pct}%)
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => setCurrentTab('safah_flow')}
+                                        className="px-4 py-2.5 rounded-2xl bg-black text-white text-xs font-bold shadow-xs hover:bg-slate-800 transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
+                                    >
+                                        <span>Buka SafahFlow</span>
+                                        <i className="ph-bold ph-arrow-right text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
 
                             <StatCards
                                 activeTasksCount={activeTasksCount}
@@ -540,6 +676,26 @@ export default function Dashboard({
                                 />
                             </div>
                         </div>
+                    )}
+
+                    {/* TAB: SAFAHFLOW */}
+                    {currentTab === 'safah_flow' && (
+                        <SafahFlowView
+                            deProjects={deProjects}
+                            overallDeProgress={overallDeProgress}
+                            bootcampSessions={bootcampSessions}
+                            nextLiveClass={nextLiveClass}
+                            todayDailyLog={todayDailyLog}
+                            todaySpiritualLog={todaySpiritualLog}
+                            todayChoreLog={todayChoreLog}
+                            safahFlowStats={safahFlowStats}
+                            onAddProject={() => setProjectModal({ open: true, project: null })}
+                            onEditProject={(project) => setProjectModal({ open: true, project })}
+                            onAddSession={() => setSessionEditModal({ open: true, session: null })}
+                            onEditSession={(session) => setSessionEditModal({ open: true, session })}
+                            onAddMilestone={(project) => setMilestoneModal({ open: true, project })}
+                            onToast={addToast}
+                        />
                     )}
 
                     {/* TAB: PROJECTS (KANBAN) */}
@@ -746,6 +902,27 @@ export default function Dashboard({
                 onClose={() => setFaqModal({ open: false, faq: null })}
             />
 
+            <SessionEditModal
+                open={sessionEditModal.open}
+                session={sessionEditModal.session}
+                onClose={() => setSessionEditModal({ open: false, session: null })}
+                onToast={addToast}
+            />
+
+            <ProjectModal
+                open={projectModal.open}
+                project={projectModal.project}
+                onClose={() => setProjectModal({ open: false, project: null })}
+                onToast={addToast}
+            />
+
+            <MilestoneModal
+                open={milestoneModal.open}
+                project={milestoneModal.project}
+                onClose={() => setMilestoneModal({ open: false, project: null })}
+                onToast={addToast}
+            />
+
             {/* Custom Confirm Delete Modal */}
             <ConfirmDeleteModal
                 isOpen={deleteModal.open}
@@ -761,6 +938,13 @@ export default function Dashboard({
                 isOpen={showSplash}
                 userName={user.name ? (user.name.split(' ')[0] || 'Safah') : 'Safah'}
                 onClose={handleCloseSplash}
+            />
+
+            {/* 22:00 Hard-Stop Sleep Reminder Modal */}
+            <SleepReminderModal
+                open={sleepReminderOpen}
+                onClose={handleCloseSleepReminder}
+                onSnooze={handleSnoozeSleepReminder}
             />
         </div>
     );
