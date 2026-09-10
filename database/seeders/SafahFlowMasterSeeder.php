@@ -19,7 +19,8 @@ class SafahFlowMasterSeeder extends Seeder
     {
         $user = User::first();
         if (!$user) {
-            return;
+            $this->call(UserSeeder::class);
+            $user = User::first();
         }
 
         // 1. Seed 36 Bootcamp Sessions from Jadwal Kelas.xlsx
@@ -684,8 +685,8 @@ class SafahFlowMasterSeeder extends Seeder
             [
                 'day_type' => 'FULL_LAB',
                 'effective_study_minutes' => 240,
-                'key_output' => 'Telkom ETL Bronze Ingestion pipeline & Azure Realtime star schema draft',
-                'error_and_solution' => 'Terkendala rate limiting pada API extractor, diselesaikan dengan exponential backoff dan jitter.',
+                'key_output' => 'Kickoff Proyek Portofolio: Inisialisasi Repository, Environment & Data Profiling',
+                'error_and_solution' => 'Memulai roadmap 15 pekan target proyek portofolio hingga bootcamp selesai.',
                 'git_commit_hash' => '8a989d5',
                 'energy_level' => 5,
             ]

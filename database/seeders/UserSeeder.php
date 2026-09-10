@@ -15,18 +15,21 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Jangan buat user baru jika di database sudah ada akun yang terdaftar
+        if (User::exists()) {
+            return;
+        }
+
         // Kredensial disamarkan (masked) secara default
         $maskedName = env('ADMIN_NAME', 'Admin (Identitas Disamarkan)');
         $maskedEmail = env('ADMIN_EMAIL', 'admin_***@example.internal');
         $maskedPassword = env('ADMIN_PASSWORD', 'Kredensial_Disamarkan_2026!');
 
-        User::updateOrCreate(
-            ['email' => $maskedEmail],
-            [
-                'name' => $maskedName,
-                'password' => Hash::make($maskedPassword),
-                'email_verified_at' => now(),
-            ]
-        );
+        User::create([
+            'name' => $maskedName,
+            'email' => $maskedEmail,
+            'password' => Hash::make($maskedPassword),
+            'email_verified_at' => now(),
+        ]);
     }
 }
