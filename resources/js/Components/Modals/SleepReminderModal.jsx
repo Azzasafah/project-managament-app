@@ -5,7 +5,7 @@ export default function SleepReminderModal({ open, onClose, onSnooze }) {
         if (open) {
             // Play gentle night chime / voice if audio is supported
             try {
-                const audio = new Audio('/sounds/otsukare.mp3');
+                const audio = new Audio('/sounds/002_No.7%20Night.wav');
                 audio.volume = 0.6;
                 audio.play().catch(() => {});
             } catch (e) {}

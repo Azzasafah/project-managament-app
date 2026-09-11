@@ -45,7 +45,14 @@ export default function SplashScreenModal({
     useEffect(() => {
         if (isOpen && soundEnabled) {
             try {
-                const audio = new Audio('/sounds/otsukare.mp3');
+                const hour = new Date().getHours();
+                let soundUrl = '/sounds/001_No7%20Morning.wav';
+                if (hour >= 20 || hour < 5) {
+                    soundUrl = '/sounds/002_No.7%20Night.wav';
+                } else if (hour >= 12) {
+                    soundUrl = '/sounds/003_No.7%20Date.wav';
+                }
+                const audio = new Audio(soundUrl);
                 audio.volume = 0.5;
                 audio.play().catch(() => {});
             } catch (e) {}

@@ -42,10 +42,10 @@
 - **Automated 22:00 WIB Hard-Stop Modal (`SleepReminderModal`)**:
   - Automated interval timer triggers an ambient night-glow modal once the local clock reaches **22:00 WIB** (active through early dawn).
   - Enforces healthy boundary guidelines: shut down workstation/IDE, recite Surah Al-Mulk for mindfulness, and log a target of 7.5 hours of restorative sleep to recharge for Tahajud prayer and next-day engineering.
-  - Features soothing anime chime audio playback (`/sounds/otsukare.mp3`), official HTML5 Web Desktop Notifications, a **10-Minute Snooze** button, and rest acknowledgement.
+  - Features soothing anime voice audio playback (`/sounds/002_No.7 Night.wav`), official HTML5 Web Desktop Notifications, a **10-Minute Snooze** button, and rest acknowledgement.
 - **Interactive Anti-Burnout Booster Card**:
   - Randomized inspirational anime voice quotes and data engineering wisdom accompanied by playful micro-animations.
-  - Authentic Japanese anime audio clips with convenient Mute/Unmute controls.
+  - Authentic Japanese anime audio clips featuring the **No. 07 series**: **Selamat Pagi** (`001_No7 Morning.wav`), **Belajar** (`003_No.7 Date.wav`), and **Selamat Malam** (`002_No.7 Night.wav`), with convenient Mute/Unmute controls.
   - **Custom Audio Uploader**: Allows uploading custom `.mp3`/`.wav` sounds with live preview, stored locally in the browser (`localStorage`).
 
 ### 3. 🕌 Real-Time Prayer Schedule Engine (Indonesian Ministry of Religious Affairs API)

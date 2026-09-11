@@ -40,10 +40,10 @@ const MOTIVATIONAL_QUOTES = [
 ];
 
 const PRESET_SOUNDS = [
-    { id: 'otsukare_1', name: 'Anime Otsukare ~ Cheer 1', url: '/sounds/otsukare.mp3' },
-    { id: 'otsukare_2', name: 'Anime Otsukare ~ Cheer 2', url: '/sounds/anime_cheer_2.mp3' },
-    { id: 'otsukare_3', name: 'Anime Otsukare ~ Cheer 3', url: '/sounds/anime_cheer_3.mp3' },
-    { id: 'tts_jp', name: 'Japanese Voice (Otsukaresama Speech)', url: 'speech' },
+    { id: 'morning', name: 'Selamat Pagi (No.07 Morning)', tag: 'Pagi', url: '/sounds/001_No7%20Morning.wav' },
+    { id: 'date_study', name: 'Belajar (No.07 Date)', tag: 'Belajar', url: '/sounds/003_No.7%20Date.wav' },
+    { id: 'night', name: 'Selamat Malam (No.07 Night)', tag: 'Malam', url: '/sounds/002_No.7%20Night.wav' },
+    { id: 'tts_jp', name: 'Japanese Voice (Speech Synthesis)', tag: 'TTS', url: 'speech' },
 ];
 
 export default function AntiBurnoutCard({ onToast }) {
@@ -54,7 +54,12 @@ export default function AntiBurnoutCard({ onToast }) {
 
     // Audio settings
     const [soundSource, setSoundSource] = useState(() => {
-        return localStorage.getItem('safahflow_burnout_sound_source') || 'otsukare_1';
+        const saved = localStorage.getItem('safahflow_burnout_sound_source');
+        if (saved && PRESET_SOUNDS.some(s => s.id === saved)) {
+            return saved;
+        }
+        if (saved === 'custom') return 'custom';
+        return 'morning';
     });
     const [customSoundData, setCustomSoundData] = useState(() => {
         return localStorage.getItem('safahflow_custom_audio_data') || null;
@@ -77,12 +82,13 @@ export default function AntiBurnoutCard({ onToast }) {
     const currentQuote = MOTIVATIONAL_QUOTES[currentQuoteIndex];
 
     // Play Sound function
-    const playCheerSound = () => {
+    const playCheerSound = (overrideSource = null) => {
         if (isMuted) return;
+        const activeSource = overrideSource || soundSource;
 
         try {
             // Case 1: Custom Uploaded Sound
-            if (soundSource === 'custom' && customSoundData) {
+            if (activeSource === 'custom' && customSoundData) {
                 if (audioRef.current) {
                     audioRef.current.src = customSoundData;
                     audioRef.current.currentTime = 0;
@@ -92,7 +98,7 @@ export default function AntiBurnoutCard({ onToast }) {
             }
 
             // Case 2: Japanese Speech Synthesis
-            if (soundSource === 'tts_jp') {
+            if (activeSource === 'tts_jp') {
                 if ('speechSynthesis' in window) {
                     window.speechSynthesis.cancel();
                     const quote = MOTIVATIONAL_QUOTES[currentQuoteIndex];
@@ -112,7 +118,7 @@ export default function AntiBurnoutCard({ onToast }) {
             }
 
             // Case 3: Preset Anime Sounds
-            const preset = PRESET_SOUNDS.find(s => s.id === soundSource) || PRESET_SOUNDS[0];
+            const preset = PRESET_SOUNDS.find(s => s.id === activeSource) || PRESET_SOUNDS[0];
             if (preset && preset.url && preset.url !== 'speech') {
                 if (audioRef.current) {
                     audioRef.current.src = preset.url;
@@ -269,8 +275,8 @@ export default function AntiBurnoutCard({ onToast }) {
                             <i className="ph-bold ph-sparkle text-rose-500"></i>
                             {currentQuote.mood}
                         </span>
-                        <span className="text-[10px] font-mono text-neutral-400">
-                            {soundSource === 'custom' ? `🎵 ${customSoundName}` : '🔊 Anime Voice'}
+                        <span className="text-[10px] font-mono text-neutral-400 truncate max-w-[160px]" title={soundSource === 'custom' ? customSoundName : PRESET_SOUNDS.find(s => s.id === soundSource)?.name}>
+                            {soundSource === 'custom' ? `🎵 ${customSoundName}` : `🔊 ${PRESET_SOUNDS.find(s => s.id === soundSource)?.name || 'Anime Voice'}`}
                         </span>
                     </div>
 
@@ -359,14 +365,21 @@ export default function AntiBurnoutCard({ onToast }) {
                                         >
                                             <div className="flex items-center gap-2.5">
                                                 <i className={`ph-bold ${soundSource === sound.id ? 'ph-radio-button text-black' : 'ph-circle text-slate-300'}`}></i>
-                                                <span>{sound.name}</span>
+                                                <div>
+                                                    <p className="font-bold text-slate-900">{sound.name}</p>
+                                                    {sound.tag && (
+                                                        <span className="text-[10px] font-mono text-slate-400 font-normal">
+                                                            Kategori: {sound.tag}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                             <button
                                                 type="button"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleSelectPreset(sound.id);
-                                                    setTimeout(() => playCheerSound(), 50);
+                                                    playCheerSound(sound.id);
                                                 }}
                                                 className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-black hover:text-white text-slate-700 text-[11px] font-mono font-bold transition-all cursor-pointer flex items-center gap-1"
                                                 title="Test Suara Ini"
@@ -444,10 +457,10 @@ export default function AntiBurnoutCard({ onToast }) {
                                                 onClick={() => {
                                                     setCustomSoundData(null);
                                                     setCustomSoundName('');
-                                                    setSoundSource('otsukare_1');
+                                                    setSoundSource('morning');
                                                     localStorage.removeItem('safahflow_custom_audio_data');
                                                     localStorage.removeItem('safahflow_custom_audio_name');
-                                                    localStorage.setItem('safahflow_burnout_sound_source', 'otsukare_1');
+                                                    localStorage.setItem('safahflow_burnout_sound_source', 'morning');
                                                     if (onToast) onToast('Audio custom dihapus. Menggunakan suara anime default.', 'info');
                                                 }}
                                                 className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-400 hover:text-rose-600 flex items-center justify-center text-xs transition-colors cursor-pointer"
