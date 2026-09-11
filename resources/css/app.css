@@ -130,3 +130,50 @@ body {
 .animate-scale-up {
     animation: scaleUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+@keyframes floatSoft {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-8px) rotate(0.8deg);
+    }
+}
+
+.animate-float-soft {
+    animation: floatSoft 4.5s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.4), 0 0 50px -10px rgba(168, 85, 247, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 40px 0px rgba(99, 102, 241, 0.7), 0 0 70px 5px rgba(168, 85, 247, 0.35);
+    }
+}
+
+.animate-pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes scanlineBeam {
+    0% {
+        top: -10%;
+        opacity: 0;
+    }
+    30% {
+        opacity: 0.8;
+    }
+    70% {
+        opacity: 0.8;
+    }
+    100% {
+        top: 110%;
+        opacity: 0;
+    }
+}
+
+.animate-scanline {
+    animation: scanlineBeam 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

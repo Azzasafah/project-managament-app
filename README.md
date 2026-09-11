@@ -64,7 +64,17 @@
   - Toggle button collapses the sidebar into a slim icon-only strip (`w-20`) to maximize screen real estate for Kanban boards and SafahFlow charts.
   - Includes interactive floating tooltip popovers for every navigation link in compact mode.
 
-### 5. 🔲 Public Portfolio Showcase (`/portfolio`)
+### 5. 📱 Android PWA & Animated Chisa Splash Screen
+- **Full Android PWA Readiness**:
+  - Web App Manifest (`public/manifest.json`) configured with `standalone` display, dark cyber theme `#0e0e12`, and high-resolution adaptive icons (192px, 512px, maskable).
+  - Production-ready Service Worker (`public/sw.js`) enabling offline caching for assets, audio files, and quick launch speeds.
+- **Holographic Chisa Assistant Splash Screen (`SplashScreenModal`)**:
+  - Showcases `chisa.png` framed in a cyber-manga holographic portal with soft floating motion (`animate-float-soft`), scanning laser beam (`animate-scanline`), and ambient neon halo (`animate-pulse-glow`).
+  - Multilingual welcome greetings in Japanese (*"お帰りなさいませ！"*) and English/Indonesian.
+  - Automated rotating inspirational quotes with category pills (*DAILY BOOST*, *SYSTEM ARCHITECT*, *FOCUS & DISCIPLINE*).
+  - Simulated 0–100% neural initialization progress bar with authentic anime audio chime playback and quick one-tap launch.
+
+### 6. 🔲 Public Portfolio Showcase (`/portfolio`)
 - **Monochrome Manga Cyber Aesthetic**: High-contrast Neo-Tokyo visual design styled with dot-matrix screen-tones.
 - **Dynamic Tag Filtering**: Project categories extracted dynamically from verified Kanban tasks.
 - **Instant Theme Switcher**: Toggle effortlessly between **Light Mode (Editorial Manga Paper)** and **Dark Mode (Midnight Cyber Manga)** with local persistence.

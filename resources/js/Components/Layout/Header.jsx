@@ -9,6 +9,7 @@ export default function Header({
     onToggleMobileSidebar,
     isSidebarCollapsed = false,
     onToggleDesktopSidebar,
+    onOpenSplash,
 }) {
     const activeItem = navItems.find((n) => n.id === currentTab);
 
@@ -43,6 +44,13 @@ export default function Header({
                 </div>
 
                 <div className="flex items-center gap-2">
+                    <button
+                        onClick={onOpenSplash}
+                        className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm hover:bg-indigo-100 transition-colors cursor-pointer"
+                        title="Asisten Chisa AI"
+                    >
+                        <i className="ph-fill ph-sparkle text-indigo-500"></i>
+                    </button>
                     <Link
                         href="/"
                         className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm hover:bg-slate-200 transition-colors cursor-pointer"
@@ -89,6 +97,14 @@ export default function Header({
                 </div>
 
                 <div className="flex items-center gap-3">
+                    <button
+                        type="button"
+                        onClick={onOpenSplash}
+                        className="px-3.5 py-2 bg-indigo-50/80 border border-indigo-200/80 text-indigo-700 hover:bg-indigo-100 rounded-xl text-xs font-mono font-bold transition-all shadow-xs flex items-center gap-1.5 active:scale-[0.98] cursor-pointer"
+                        title="Buka Asisten Chisa AI"
+                    >
+                        <i className="ph-fill ph-sparkle text-indigo-500 text-sm"></i> Chisa AI
+                    </button>
                     <Link
                         href="/"
                         className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-mono font-bold transition-all shadow-xs flex items-center gap-1.5 active:scale-[0.98]"

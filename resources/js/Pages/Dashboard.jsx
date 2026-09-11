@@ -99,9 +99,13 @@ export default function Dashboard({
     const [isFetchingImage, setIsFetchingImage] = useState(false);
     const [feedId, setFeedId] = useState(7421);
 
-    // First Login Welcome Splash Screen
+    // First Login / App Launch Welcome Splash Screen
     const [showSplash, setShowSplash] = useState(() => {
         if (typeof window !== 'undefined') {
+            const todayKey = new Date().toISOString().split('T')[0];
+            if (localStorage.getItem('safah_splash_dont_show_' + todayKey)) {
+                return false;
+            }
             return !sessionStorage.getItem('safah_splash_shown');
         }
         return true;
@@ -596,6 +600,7 @@ export default function Dashboard({
                     onToggleMobileSidebar={() => setMobileSidebarOpen((prev) => !prev)}
                     isSidebarCollapsed={desktopSidebarCollapsed}
                     onToggleDesktopSidebar={handleToggleDesktopSidebar}
+                    onOpenSplash={() => setShowSplash(true)}
                 />
 
                 {/* Viewport Scroll Container */}

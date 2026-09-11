@@ -6,10 +6,18 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title inertia>Muhammad Hafizh Azzasafah — Portfolio</title>
 
+    <!-- PWA & Android Meta Tags -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#0e0e12">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Safah Workspace">
+
     <!-- Custom Techwear / Brand Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="alternate icon" href="{{ asset('favicon.svg') }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icon-192.png') }}">
 
     <!-- Google Fonts: Preconnect & Display Swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,5 +40,16 @@
 </head>
 <body class="text-slate-800 antialiased selection:bg-black selection:text-white bg-slate-100 font-sans">
     @inertia
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((reg) => console.log('Safah PWA Service Worker registered:', reg.scope))
+                    .catch((err) => console.log('PWA Service Worker registration failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>
