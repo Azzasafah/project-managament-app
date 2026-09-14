@@ -134,8 +134,13 @@ php artisan key:generate
 # ADMIN_EMAIL="email@domain.com"
 # ADMIN_PASSWORD="your_secure_password"
 
-# 6. Run database migrations & seeders
+# 6. Run database migrations & seeders (All-in-one or individual)
 php artisan migrate --seed
+
+# Or seed specific modules independently:
+# php artisan db:seed --class=UserSeeder
+# php artisan db:seed --class=CvPortfolioSeeder
+# php artisan db:seed --class=SafahFlowMasterSeeder
 
 # 7. Compile frontend assets & launch local server
 npm run build
