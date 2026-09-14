@@ -23,71 +23,148 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $user = User::first();
 
-        // 2. Tasks & Portfolio Projects (from CV)
+        // Clean user's previous portfolio/cv seeds to ensure clean idempotency
+        Task::where('user_id', $user->id)->delete();
+        FreelanceProject::where('user_id', $user->id)->delete();
+        Certification::where('user_id', $user->id)->delete();
+        Faq::where('user_id', $user->id)->delete();
+        LearningJournal::where('user_id', $user->id)->delete();
+        KajianSchedule::where('user_id', $user->id)->delete();
+        RefreshingActivity::where('user_id', $user->id)->delete();
+
+        // 2. Tasks & Portfolio Projects (8 Portfolio Projects from GitHub Repositories)
         $tasks = [
             [
-                'title' => 'Grocery Store API Testing — Katalon Studio & k6',
-                'description' => 'Merancang dan mengeksekusi 18+ test case untuk Simple Grocery Store API menggunakan Katalon Studio pada 7 endpoint utama (products, cart, order, auth). Dilengkapi Smoke Testing, E2E Flow, Negative Testing, serta performance testing menggunakan k6 hingga 1.000 concurrent users.',
+                'title' => 'Express Mini ERP — REST API & Inventory Management',
+                'description' => 'Membangun arsitektur backend REST API modular untuk sistem ERP mini (PO, SO, stok produk, karyawan, laporan). Menggunakan Express 5, Prisma 7, PostgreSQL, autentikasi JWT dengan role-based access control, Joi validation, export ExcelJS, dan dokumentasi Swagger UI.',
                 'status' => 'done',
                 'tag' => 'Backend',
                 'priority' => 'high',
                 'date_label' => 'Selesai',
-                'due_date' => Carbon::yesterday(),
+                'due_date' => Carbon::today()->subDays(1),
                 'order_index' => 0,
                 'is_portfolio' => true,
-                'portfolio_summary' => 'Automated API Testing & Performance Benchmark dengan 18+ test case di Katalon Studio, validasi Bearer Token, dan simulasi beban 1.000 concurrent users dengan k6.',
-                'github_url' => 'https://github.com/Azzasafah/grocery-api-katalon-test',
-                'live_url' => 'https://shorturl.at/yk1kz',
-                'tech_stack' => ['Katalon Studio', 'Groovy', 'REST API', 'k6', 'Postman'],
+                'button_display_mode' => 'github',
+                'portfolio_summary' => 'REST API sistem ERP mini mencakup modul pembelian (PO), penjualan (SO), manajemen inventaris dengan pergerakan stok atomic, manajemen karyawan, dan pelaporan export Excel (.xlsx) dengan Node.js, Express 5, Prisma ORM, dan PostgreSQL.',
+                'github_url' => 'https://github.com/Azzasafah/Express-MiniERP',
+                'live_url' => null,
+                'tech_stack' => ['Node.js', 'Express 5', 'Prisma ORM', 'PostgreSQL', 'JWT', 'Joi', 'Swagger UI', 'ExcelJS'],
             ],
             [
-                'title' => 'Grocery Store Web UI Automation — Katalon Studio',
-                'description' => 'Membangun UI automation testing web Grocery Store dengan 30+ step pengujian pada 4 alur utama: autentikasi, katalog produk, keranjang belanja, dan manajemen pesanan. Menerapkan dynamic test data timestamp dan Page Object Model.',
+                'title' => 'Procurement API — Enterprise Procurement Lifecycle',
+                'description' => 'Arsitektur backend enterprise dengan Laravel 11, PHP 8.2, dan MySQL. Dilengkapi otentikasi Sanctum Bearer Token, kontrol akses 3 level (Employee, Manager, Admin), manajemen vendor & stok multi-gudang, serta reporting analitik rata-rata lead time dan summary belanja.',
                 'status' => 'done',
-                'tag' => 'Frontend',
+                'tag' => 'Backend',
                 'priority' => 'high',
                 'date_label' => 'Selesai',
                 'due_date' => Carbon::today()->subDays(2),
                 'order_index' => 1,
                 'is_portfolio' => true,
-                'portfolio_summary' => 'Web UI Automation testing end-to-end dengan Katalon Studio, dynamic test data anti-duplikasi, dan struktur Object Repository berbasis halaman.',
-                'github_url' => 'https://github.com/Azzasafah/grocery-web-ui-katalon-test',
-                'live_url' => 'https://github.com/Azzasafah/grocery-web-ui-katalon-test',
-                'tech_stack' => ['Katalon Studio', 'Groovy', 'Web UI Automation', 'POM'],
+                'button_display_mode' => 'github',
+                'portfolio_summary' => 'RESTful API enterprise untuk alur lengkap pengadaan barang (procurement lifecycle): draft employee, approval bertingkat manager/admin, penugasan vendor, pemantauan stok otomatis, order procurement, hingga delivery tracking dan laporan analitik KPI.',
+                'github_url' => 'https://github.com/Azzasafah/Procurement-API',
+                'live_url' => null,
+                'tech_stack' => ['Laravel 11', 'PHP 8.2', 'MySQL', 'Sanctum', 'RESTful API', 'Clean Architecture', 'RBAC'],
             ],
             [
-                'title' => 'Grocery Store App — Express.js Web Application',
-                'description' => 'Aplikasi web toko grosir online berbasis Express.js dengan arsitektur MVC modular (17 REST API endpoints), session authentication, cart management, dan order fulfillment yang di-deploy ke Vercel.',
+                'title' => 'POS API Backend — Point of Sale & Midtrans Gateway',
+                'description' => 'Layanan backend POS terstruktur siap produksi: mencakup autentikasi OTP & JWT, otorisasi berbasis peran (Admin & Cashier), CRUD kategori & produk dengan upload MinIO S3-compatible, transaksi POS cash/Midtrans, callback webhook, dan laporan keuangan transaksi.',
                 'status' => 'done',
                 'tag' => 'Backend',
+                'priority' => 'high',
+                'date_label' => 'Selesai',
+                'due_date' => Carbon::today()->subDays(3),
+                'order_index' => 2,
+                'is_portfolio' => true,
+                'button_display_mode' => 'github',
+                'portfolio_summary' => 'Backend layanan Point of Sale (POS) modular dengan Node.js & Express, Prisma ORM, integrasi Midtrans Snap payment gateway, MinIO object storage untuk gambar produk, SMTP Mailer OTP, dan JWT authentication.',
+                'github_url' => 'https://github.com/safahdev/backend-pos',
+                'live_url' => null,
+                'tech_stack' => ['Node.js', 'Express.js', 'Prisma ORM', 'Midtrans', 'MinIO', 'JWT', 'PostgreSQL', 'SMTP Mailer'],
+            ],
+            [
+                'title' => 'Frontend POS — Point of Sale Cashier Interface',
+                'description' => 'Frontend kasir POS modern dibangun dengan Next.js dan Tailwind CSS. Terhubung langsung dengan backend POS untuk manajemen data produk, pencarian cepat, kalkulasi subtotal transaksi kasir, serta integrasi popup pembayaran Midtrans Snap.',
+                'status' => 'done',
+                'tag' => 'Frontend',
                 'priority' => 'high',
                 'date_label' => 'Selesai',
                 'due_date' => Carbon::today()->subDays(4),
-                'order_index' => 2,
+                'order_index' => 3,
                 'is_portfolio' => true,
-                'portfolio_summary' => 'Aplikasi web toko grosir MVC dengan Express.js, integrasi REST API eksternal, dan arsitektur routing modular (AUT untuk pengujian UI).',
-                'github_url' => 'https://github.com/Azzasafah/Grocery-Store-App',
-                'live_url' => 'https://grocery-store-app.vercel.app',
-                'tech_stack' => ['Node.js', 'Express.js', 'REST API', 'JavaScript', 'Vercel'],
+                'button_display_mode' => 'github',
+                'portfolio_summary' => 'Antarmuka web kasir POS modern berbasis Next.js dan Tailwind CSS yang terintegrasi dengan POS API Backend, mendukung katalog produk responsif, keranjang kasir real-time, dan modal checkout pembayaran Midtrans Snap.',
+                'github_url' => 'https://github.com/safahdev/frontend-pos',
+                'live_url' => null,
+                'tech_stack' => ['Next.js', 'React', 'Tailwind CSS', 'Midtrans Snap', 'REST API', 'JavaScript'],
             ],
             [
-                'title' => 'Fullstack Point of Sales (POS) & Payment Gateway',
-                'description' => 'Aplikasi POS modern fullstack terpisah (Next.js frontend & Express.js backend), autentikasi JWT aman, integrasi Midtrans payment gateway, dan deployment production (Predikat Best Graduate Sinau Koding).',
+                'title' => 'Mulia Karya — E-Commerce & Custom Furniture Fabrication Tracking',
+                'description' => 'Aplikasi fullstack Laravel 12 & Tailwind CSS dengan estetika premium craftsmanship. Mencakup 8 modul utama: katalog produk SVLK, custom studio 3D, pelacakan live milestone proyek, multi-gateway Midtrans (SHA-512) & QRIS, notifikasi otomatis WhatsApp Gateway (Fonnte API), dan admin backoffice CMS.',
                 'status' => 'done',
-                'tag' => 'Backend',
+                'tag' => 'Fullstack',
+                'priority' => 'high',
+                'date_label' => 'Selesai',
+                'due_date' => Carbon::today()->subDays(5),
+                'order_index' => 4,
+                'is_portfolio' => true,
+                'button_display_mode' => 'github',
+                'portfolio_summary' => 'Platform web digitalisasi mebel Jepara: katalog furnitur kayu solid oven (SVLK), studio custom order & 3D interior, live milestone tracking progres workshop, pembayaran Midtrans & QRIS, serta notifikasi WhatsApp Fonnte & Email transaksional.',
+                'github_url' => 'https://github.com/Azzasafah/mulia-karya-umkm-furnitur',
+                'live_url' => null,
+                'tech_stack' => ['Laravel 12', 'Tailwind CSS', 'Midtrans', 'WhatsApp Gateway', 'PHP 8.2', 'MySQL', 'SEO JSON-LD'],
+            ],
+            [
+                'title' => 'Berdikari Tofu Platform — D2C E-Commerce & Admin CMS',
+                'description' => 'Aplikasi web modern memadukan frontend responsif React & Inertia.js dengan backend Laravel 11. Memiliki checkout WhatsApp otomatis terstruktur, katalog produk dinamis, manajemen testimoni & FAQ, pengaturan toko fleksibel, dan SEO metadata Schema.org.',
+                'status' => 'done',
+                'tag' => 'Fullstack',
                 'priority' => 'high',
                 'date_label' => 'Selesai',
                 'due_date' => Carbon::today()->subDays(6),
-                'order_index' => 3,
+                'order_index' => 5,
                 'is_portfolio' => true,
-                'portfolio_summary' => 'Aplikasi kasir (POS) end-to-end dengan Next.js, Express.js API, JWT authentication, dan integrasi payment gateway Midtrans.',
-                'github_url' => 'https://github.com/Azzasafah',
-                'live_url' => 'https://shorturl.at/TY7So',
-                'tech_stack' => ['Next.js', 'Express.js', 'Midtrans', 'JWT', 'Tailwind CSS'],
+                'button_display_mode' => 'github',
+                'portfolio_summary' => 'Platform e-commerce D2C untuk digitalisasi UMKM produsen tahu segar: katalog varian interaktif, pemesanan instan 1-klik via WhatsApp dengan kalkulator subtotal otomatis, embed Google Maps lokasi produksi, serta dashboard admin CMS dinamis.',
+                'github_url' => 'https://github.com/Azzasafah/berdikari-tofu-platform',
+                'live_url' => null,
+                'tech_stack' => ['Laravel 11', 'Inertia.js', 'React', 'Tailwind CSS', 'WhatsApp Order Flow', 'MySQL', 'Vite'],
+            ],
+            [
+                'title' => 'Grocery Store API Testing — Katalon Studio',
+                'description' => 'Merancang dan mengeksekusi 18+ automated test case pada Simple Grocery Store API menggunakan Katalon Studio (Groovy). Menguji alur lengkap: health check status, pembuatan cart, penambahan & update item, registrasi client, validasi Bearer Token, pembuatan order, hingga verifikasi penanganan error (status 400, 401, 404).',
+                'status' => 'done',
+                'tag' => 'QA Automation',
+                'priority' => 'high',
+                'date_label' => 'Selesai',
+                'due_date' => Carbon::today()->subDays(7),
+                'order_index' => 6,
+                'is_portfolio' => true,
+                'button_display_mode' => 'github',
+                'portfolio_summary' => 'Automated API Testing untuk Simple Grocery Store API menggunakan Katalon Studio & Groovy pada 7 endpoint utama (products, cart, order, clients). Dilengkapi Smoke Testing, E2E Positive Journey, Negative Testing, validasi Bearer Token, dan dynamic test data.',
+                'github_url' => 'https://github.com/Azzasafah/grocery-api-katalon-test',
+                'live_url' => null,
+                'tech_stack' => ['Katalon Studio', 'Groovy', 'REST API', 'Postman', 'Test Automation', 'API Testing'],
+            ],
+            [
+                'title' => 'Grocery Store Web UI Automation — Katalon Studio',
+                'description' => 'Membangun UI automation testing web Grocery Store dengan 30+ step pengujian pada 4 alur utama: autentikasi, katalog produk, keranjang belanja, dan manajemen pesanan. Menerapkan dynamic test data timestamp dan Object Repository terstruktur berbasis halaman (POM).',
+                'status' => 'done',
+                'tag' => 'QA Automation',
+                'priority' => 'high',
+                'date_label' => 'Selesai',
+                'due_date' => Carbon::today()->subDays(8),
+                'order_index' => 7,
+                'is_portfolio' => true,
+                'button_display_mode' => 'both',
+                'portfolio_summary' => 'Web UI Automation testing end-to-end untuk aplikasi web Grocery Store dengan Katalon Studio, dynamic test data anti-duplikasi, Page Object Model (POM), dan validasi alur checkout nyata.',
+                'github_url' => 'https://github.com/Azzasafah/grocery-web-ui-katalon-test',
+                'live_url' => 'https://grocery-store-app-seven.vercel.app',
+                'tech_stack' => ['Katalon Studio', 'Groovy', 'Web UI Automation', 'Selenium-based', 'POM'],
             ],
             [
                 'title' => 'Refactor Test Suites & CI/CD Pipeline Integration',
-                'description' => 'Optimasi script automasi test suite dan konfigurasi GitHub Actions workflow.',
+                'description' => 'Optimasi script automasi test suite dan konfigurasi GitHub Actions workflow untuk continuous testing.',
                 'status' => 'in_progress',
                 'tag' => 'Backend',
                 'priority' => 'high',
@@ -97,14 +174,14 @@ class DatabaseSeeder extends Seeder
                 'is_portfolio' => false,
             ],
             [
-                'title' => 'Eksplorasi Performance Load Testing dengan k6 Scripting',
-                'description' => 'Menyusun skenario spike testing dan stress testing untuk REST API endpoints.',
+                'title' => 'Eksplorasi Cloud Infrastructure & Containerization',
+                'description' => 'Membangun arsitektur deployment menggunakan Docker container dan orkestrasi microservice berbasis cloud.',
                 'status' => 'todo',
                 'tag' => 'Cloud',
                 'priority' => 'medium',
                 'date_label' => 'Besok',
                 'due_date' => Carbon::tomorrow(),
-                'order_index' => 0,
+                'order_index' => 1,
                 'is_portfolio' => false,
             ],
         ];
@@ -113,7 +190,8 @@ class DatabaseSeeder extends Seeder
             $user->tasks()->create($taskData);
         }
 
-        // 3. Freelance Projects (Dynamic)
+        // 3. Freelance Projects / Magang (Dynamic)
+        // Aturan: Drive link = project_url (Detail Proyek), GitHub link = github_url, Keduanya = isi keduanya
         $freelanceProjects = [
             [
                 'title' => 'Sistem Informasi Manajemen Tugas Akhir & Seminar',
@@ -122,8 +200,8 @@ class DatabaseSeeder extends Seeder
                 'period' => 'Apr 2021 – Jul 2021',
                 'tech_stack' => ['CodeIgniter', 'PHP', 'MySQL', 'Bootstrap', 'UML', 'ERD'],
                 'description' => 'Merancang dan mengembangkan sistem informasi digital untuk pendaftaran, bimbingan, dan seminar tugas akhir mahasiswa Fakultas Teknik. Mendigitalkan alur administrasi akademik dan meraih nilai akhir "A".',
-                'project_url' => 'https://github.com/Azzasafah',
-                'github_url' => 'https://github.com/Azzasafah',
+                'project_url' => 'https://drive.google.com/file/d/1Wqk2qeqlswQxsr4xcQSizIyy8obuuuN6/view',
+                'github_url' => 'https://github.com/br4masta/ci4app-Project-Tugas-Akhir',
                 'status' => 'completed',
                 'order_index' => 0,
                 'is_active' => true,
@@ -135,8 +213,8 @@ class DatabaseSeeder extends Seeder
                 'period' => 'Nov 2023 – Des 2023',
                 'tech_stack' => ['Microsoft Excel', 'Pivot Table', 'SWOT Analysis', 'Data Analysis'],
                 'description' => 'Mengolah data kepegawaian dan melakukan analisis performa menggunakan Microsoft Excel (pivot table, data visualization) serta analisis SWOT untuk menyusun strategi negosiasi dan rencana implementasi perangkat lunak HR.',
-                'project_url' => 'https://github.com/Azzasafah',
-                'github_url' => 'https://github.com/Azzasafah',
+                'project_url' => 'https://drive.google.com/drive/folders/1KbPZsgMy2EwDpQSJ0BUHTPz7VB7ID-h3?usp=drive_link',
+                'github_url' => null,
                 'status' => 'completed',
                 'order_index' => 1,
                 'is_active' => true,
@@ -148,8 +226,8 @@ class DatabaseSeeder extends Seeder
                 'period' => 'Jan 2023 – Feb 2023',
                 'tech_stack' => ['UML', 'DFD', 'ERD', 'Use Case Diagram', 'System Architecture'],
                 'description' => 'Merancang dokumentasi sistem komprehensif dan memetakan alur kerja registrasi pasien bagi tiga jenis pengguna (pasien, admin, front office) menggunakan DFD, Activity Diagram, Sequence Diagram, dan ERD.',
-                'project_url' => 'https://github.com/Azzasafah',
-                'github_url' => 'https://github.com/Azzasafah',
+                'project_url' => 'https://best-emu-e9d.notion.site/Project-Based-Virtual-Intern-fb58b73147714ce2a2070ea99d1eef8a',
+                'github_url' => null,
                 'status' => 'completed',
                 'order_index' => 2,
                 'is_active' => true,
@@ -161,8 +239,8 @@ class DatabaseSeeder extends Seeder
                 'period' => 'Sep 2022 – Okt 2022',
                 'tech_stack' => ['Microsoft Excel', 'Microsoft Access', 'Data Analytics', 'BI Reporting'],
                 'description' => 'Menganalisis data transaksi multi-sumber (produk, kategori, nasabah) dan membangun dashboard analitis untuk memvisualisasikan tren penjualan serta memberikan rekomendasi bundling produk strategis.',
-                'project_url' => 'https://github.com/Azzasafah',
-                'github_url' => 'https://github.com/Azzasafah',
+                'project_url' => 'https://drive.google.com/file/d/1isuTOao2y1Cs6zzWOXtfMrp9dKI0n5xI/view',
+                'github_url' => null,
                 'status' => 'completed',
                 'order_index' => 3,
                 'is_active' => true,
@@ -174,8 +252,8 @@ class DatabaseSeeder extends Seeder
                 'period' => 'Des 2024 – Jan 2025',
                 'tech_stack' => ['SOP Design', 'Process Mapping', 'Bug Reporting Template', 'Flowchart'],
                 'description' => 'Mengevaluasi dan merancang ulang alur SOP pelaporan bug antara tim support dan developer, menyederhanakan alur prosedural, dan membuat template bug report standar yang meningkatkan kecepatan respons penanganan kendala teknis.',
-                'project_url' => 'https://github.com/Azzasafah',
-                'github_url' => 'https://github.com/Azzasafah',
+                'project_url' => 'https://drive.google.com/drive/folders/10c42kus7vjdGmf6k1hbLeiq81zJye-_b?usp=drive_link',
+                'github_url' => null,
                 'status' => 'completed',
                 'order_index' => 4,
                 'is_active' => true,
@@ -186,23 +264,23 @@ class DatabaseSeeder extends Seeder
             $user->freelanceProjects()->create($fp);
         }
 
-        // 4. Learning Journals
+        // 4. Learning Journals (No k6)
         $journals = [
             [
                 'title' => 'Konsep Manual Testing & STLC (Software Testing Life Cycle)',
                 'category' => 'Data Engineering',
                 'study_date' => Carbon::today(),
-                'snippet' => 'Mempelajari metodologi penyusunan test case terstruktur, pemetaan skenario positif dan negatif, eksekusi pengujian fungsionalitas, serta pelaporan defect defect-tracking lifecycle dalam kerangka kerja Agile / Scrum.',
+                'snippet' => 'Mempelajari metodologi penyusunan test case terstruktur, pemetaan skenario positif dan negatif, eksekusi pengujian fungsionalitas, serta pelaporan defect-tracking lifecycle dalam kerangka kerja Agile / Scrum.',
                 'content' => "## Software Testing Life Cycle (STLC) & Test Strategy\n\nSTLC adalah rangkaian proses terstruktur untuk memastikan kualitas perangkat lunak memenuhi kriteria fungsional dan non-fungsional.\n\n### Tahapan Utama STLC:\n1. **Requirement Analysis**: Membedah Functional Specification Document (FSD) dan User Stories.\n2. **Test Planning**: Menentukan cakupan, jadwal, dan sumber daya pengujian.\n3. **Test Case Development**: Merancang skenario positif, negatif, dan boundary value analysis (BVA).\n4. **Test Environment Setup**: Mempersiapkan server testing dan test data dinamis.\n5. **Test Execution**: Eksekusi test suites dan pencatatan hasil (Pass/Fail).\n6. **Test Cycle Closure**: Evaluasi defect density dan laporan kesiapan rilis (RTM).",
                 'tags' => ['QA', 'ManualTesting', 'STLC', 'TestCases', 'BugReport'],
             ],
             [
-                'title' => 'Automasi API Testing dengan Katalon Studio & k6 Load Testing',
+                'title' => 'Automasi API Testing dengan Katalon Studio & Groovy Scripting',
                 'category' => 'Cloud Computing',
                 'study_date' => Carbon::yesterday(),
-                'snippet' => 'Implementasi automasi pengujian REST API menggunakan script Groovy di Katalon Studio dan pengujian beban kinerja tinggi menggunakan k6 untuk memvalidasi throughput serta latency sistem saat menangani 1.000 concurrent virtual users.',
-                'content' => "## Arsitektur Automasi API & Performance Testing\n\n### 1. Test Suite Katalon Studio (Groovy):\n- **Smoke Testing**: Validasi endpoint kesehatan sistem (`/status`, status code 200).\n- **E2E Flow**: Registrasi user $\\rightarrow$ Pembuatan Cart $\\rightarrow$ Checkout Order $\\rightarrow$ Validasi Bearer Token.\n- **Negative Testing**: Simulasi invalid payload dan validasi error handler 400/401/404.\n\n### 2. k6 Performance Testing Script:\n```javascript\nimport http from 'k6/http';\nimport { check, sleep } from 'k6';\n\nexport const options = {\n  stages: [\n    { duration: '30s', target: 50 },\n    { duration: '1m', target: 200 },\n    { duration: '30s', target: 0 },\n  ],\n};\n\nexport default function () {\n  const res = http.get('https://api.grocerystore.com/products');\n  check(res, { 'status is 200': (r) => r.status === 200 });\n  sleep(1);\n}\n```",
-                'tags' => ['KatalonStudio', 'k6', 'Groovy', 'APITesting', 'PerformanceTesting'],
+                'snippet' => 'Implementasi automasi pengujian REST API menggunakan script Groovy di Katalon Studio untuk memvalidasi endpoint kesehatan sistem, alur transaksi E2E, penanganan payload negatif, dan Bearer Token.',
+                'content' => "## Arsitektur Automasi API Testing dengan Katalon Studio\n\n### 1. Test Suite Katalon Studio (Groovy):\n- **Smoke Testing**: Validasi endpoint kesehatan sistem (`/status`, status code 200).\n- **E2E Flow**: Registrasi user $\\rightarrow$ Pembuatan Cart $\\rightarrow$ Checkout Order $\\rightarrow$ Validasi Bearer Token.\n- **Negative Testing**: Simulasi invalid payload dan validasi error handler 400/401/404.\n- **Dynamic Test Data**: Pemanfaatan timestamp dan global variables untuk mencegah duplikasi data.",
+                'tags' => ['KatalonStudio', 'Groovy', 'APITesting', 'Automation', 'Postman'],
             ],
             [
                 'title' => 'Query SQL Lanjutan: Window Functions, Stored Procedures & Triggers',
@@ -293,7 +371,7 @@ class DatabaseSeeder extends Seeder
             $user->refreshingActivities()->create($act);
         }
 
-        // 7. Certifications (All from CV)
+        // 7. Certifications (Diperbarui dengan Google Drive Verification Links resmi)
         $certifications = [
             [
                 'title' => 'Microsoft Certified: Azure Fundamentals (AZ-900)',
@@ -301,7 +379,7 @@ class DatabaseSeeder extends Seeder
                 'type' => 'official',
                 'issue_date' => 'Agust 2023',
                 'credential_id' => 'MS-AZ900-849120',
-                'credential_url' => 'https://learn.microsoft.com/en-us/users/azzasafah',
+                'credential_url' => 'https://drive.google.com/file/d/1CR2F05c6xOJHmHdobcbun7cUs-lm157x/view?usp=drive_link',
                 'skills' => ['Microsoft Azure', 'Cloud Computing', 'Security', 'SLA & Governance', 'Virtual Machines'],
                 'description' => 'Sertifikasi resmi Microsoft yang memvalidasi pemahaman mendalam tentang konsep cloud, arsitektur layanan Azure, manajemen keamanan, privasi, dan kepatuhan infrastruktur.',
                 'order_index' => 0,
@@ -313,7 +391,7 @@ class DatabaseSeeder extends Seeder
                 'type' => 'official',
                 'issue_date' => 'Agust 2023',
                 'credential_id' => 'MS-DP900-512984',
-                'credential_url' => 'https://learn.microsoft.com/en-us/users/azzasafah',
+                'credential_url' => 'https://drive.google.com/file/d/1OiDds-jgWYRgsV-WGSaqTggUKDuhFfBp/view?usp=drive_link',
                 'skills' => ['Azure SQL', 'Cosmos DB', 'Data Lake Storage', 'Relational & Non-Relational Data', 'Azure Synapse'],
                 'description' => 'Sertifikasi resmi Microsoft untuk konsep dasar pemrosesan data relasional dan non-relasional, data warehouse, serta beban kerja analitik modern di platform Azure.',
                 'order_index' => 1,
@@ -325,7 +403,7 @@ class DatabaseSeeder extends Seeder
                 'type' => 'official',
                 'issue_date' => 'Agust 2023',
                 'credential_id' => 'MS-AI900-721093',
-                'credential_url' => 'https://learn.microsoft.com/en-us/users/azzasafah',
+                'credential_url' => 'https://drive.google.com/file/d/1QTTwkYg5Hdt9g5G8kyxxs9VMXTJKPNY1/view?usp=drive_link',
                 'skills' => ['Azure AI Services', 'Computer Vision', 'NLP', 'Machine Learning Fundamentals', 'Conversational AI'],
                 'description' => 'Sertifikasi resmi Microsoft yang membuktikan pemahaman fundamental beban kerja kecerdasan buatan (AI/ML) dan implementasi layanan Azure Cognitive Services.',
                 'order_index' => 2,
@@ -361,7 +439,7 @@ class DatabaseSeeder extends Seeder
                 'type' => 'official',
                 'issue_date' => '2026 (Valid s.d. Apr 2027)',
                 'credential_id' => 'TOEFL-577-HAFIZH',
-                'credential_url' => 'mailto:muhammad.hafizh0408@gmail.com',
+                'credential_url' => 'https://drive.google.com/file/d/1UouSTOAofpi61D53uOkEFDg4hRBVkl5X/view?usp=sharing',
                 'skills' => ['English Proficiency', 'Technical Reading', 'Listening Comprehension', 'Written Expression'],
                 'description' => 'Membuktikan kecakapan bahasa Inggris tingkat Intermediate–Upper untuk komunikasi profesional, dokumentasi teknis, dan kolaborasi global.',
                 'order_index' => 5,
@@ -373,7 +451,7 @@ class DatabaseSeeder extends Seeder
                 'type' => 'official',
                 'issue_date' => 'Jan 2026',
                 'credential_id' => 'SK-FS-BEST-2026',
-                'credential_url' => 'https://shorturl.at/TY7So',
+                'credential_url' => 'https://github.com/safahdev/backend-pos',
                 'skills' => ['Next.js', 'Express.js', 'REST API', 'Midtrans', 'JWT Auth', 'Vercel Deployment'],
                 'description' => 'Lulusan terbaik (peringkat 1 dengan nilai tertinggi) dalam pengembangan proyek aplikasi Point of Sales (POS) end-to-end terintegrasi sistem pembayaran Midtrans.',
                 'order_index' => 6,
@@ -409,7 +487,7 @@ class DatabaseSeeder extends Seeder
                 'type' => 'internship',
                 'issue_date' => 'Des 2024 – Jan 2025',
                 'credential_id' => 'RAKAMIN-DG-9233',
-                'credential_url' => 'https://github.com/Azzasafah',
+                'credential_url' => 'https://drive.google.com/drive/folders/10c42kus7vjdGmf6k1hbLeiq81zJye-_b?usp=drive_link',
                 'skills' => ['Data Governance', 'SOP Re-engineering', 'Bug Reporting Process', 'Flowchart'],
                 'description' => 'Merancang ulang alur SOP pelaporan bug antara tim support dan engineer internal, menciptakan template bug report standar, dan meraih skor evaluasi 92.33.',
                 'order_index' => 9,
@@ -421,7 +499,7 @@ class DatabaseSeeder extends Seeder
                 'type' => 'internship',
                 'issue_date' => 'Apr 2021 – Jul 2021',
                 'credential_id' => 'UNITOMO-FT-DEV-01',
-                'credential_url' => 'https://github.com/Azzasafah',
+                'credential_url' => 'https://drive.google.com/file/d/1Wqk2qeqlswQxsr4xcQSizIyy8obuuuN6/view',
                 'skills' => ['CodeIgniter', 'PHP', 'MySQL', 'UML Architecture', 'ERD Design'],
                 'description' => 'Membangun aplikasi web sistem informasi manajemen tugas akhir Fakultas Teknik, mendokumentasikan arsitektur sistem, dan meraih nilai akhir "A".',
                 'order_index' => 10,
@@ -433,11 +511,11 @@ class DatabaseSeeder extends Seeder
             $user->certifications()->create($cert);
         }
 
-        // 8. FAQs (Frequently Asked Questions from CV context)
+        // 8. FAQs (Frequently Asked Questions from CV context - No k6)
         $faqs = [
             [
                 'question' => 'Apa keahlian dan fokus utama spesialisasi Anda?',
-                'answer' => 'Saya berfokus pada Software Quality Assurance (QA Engineer) — mencakup Manual Testing, API Automation & Web UI Automation menggunakan Katalon Studio & Groovy, serta Performance Testing dengan k6. Selain itu, saya memiliki fondasi kuat dalam Fullstack Web Engineering (Laravel, Next.js, Express.js, React, Golang) dan Cloud Platform (3x Microsoft Azure Certified: AZ-900, DP-900, AI-900).',
+                'answer' => 'Saya berfokus pada Software Quality Assurance (QA Engineer) — mencakup Manual Testing, API Automation & Web UI Automation menggunakan Katalon Studio & Groovy. Selain itu, saya memiliki fondasi kuat dalam Fullstack Web Engineering (Laravel, Next.js, Express.js, React, Golang) dan Cloud Platform (3x Microsoft Azure Certified: AZ-900, DP-900, AI-900).',
                 'category' => 'Technical',
                 'order_index' => 0,
                 'is_active' => true,
@@ -451,7 +529,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'question' => 'Bagaimana metodologi Anda dalam memastikan kualitas perangkat lunak (QA)?',
-                'answer' => 'Saya menerapkan tahapan STLC yang sistematis: analisis kebutuhan dokumen (FSD/User Stories), penyusunan test scenario & test case positif/negatif, pembuatan dynamic test data untuk mencegah duplikasi, implementasi Page Object Model (POM), eksekusi regression & smoke testing terotomasi di Katalon Studio, serta pengujian beban sistem dengan k6.',
+                'answer' => 'Saya menerapkan tahapan STLC yang sistematis: analisis kebutuhan dokumen (FSD/User Stories), penyusunan test scenario & test case positif/negatif, pembuatan dynamic test data untuk mencegah duplikasi, implementasi Page Object Model (POM), serta eksekusi regression & smoke testing terotomasi di Katalon Studio.',
                 'category' => 'Technical',
                 'order_index' => 2,
                 'is_active' => true,
@@ -476,8 +554,7 @@ class DatabaseSeeder extends Seeder
             $user->faqs()->create($faq);
         }
 
-        // 8. SafahFlow (ADE Bootcamp 36 Sesi, 5 Projects, Spiritual & Chores)
+        // 9. SafahFlow (ADE Bootcamp 36 Sesi, 5 Projects, Spiritual & Chores)
         $this->call(SafahFlowMasterSeeder::class);
     }
 }
-

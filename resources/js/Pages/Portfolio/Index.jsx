@@ -193,7 +193,7 @@ export default function PortfolioIndex({
         {
             title: 'Software Quality Assurance & Testing',
             icon: 'ph-bug',
-            skills: ['Manual Testing', 'API Automation', 'Katalon Studio', 'Groovy Scripting', 'Performance Testing (k6)', 'Postman', 'STLC & SDLC', 'Test Case Design'],
+            skills: ['Manual Testing', 'API Automation', 'Katalon Studio', 'Groovy Scripting', 'REST API Testing', 'Postman', 'STLC & SDLC', 'Test Case Design'],
         },
         {
             title: 'System Design & Architecture',
@@ -227,6 +227,8 @@ export default function PortfolioIndex({
             period: 'Des 2024 – Jan 2025',
             badge: 'Virtual Internship (Skor 92.33)',
             tech: ['SOP Re-engineering', 'Bug Template', 'Flowchart', 'Process Mapping'],
+            project_url: 'https://drive.google.com/drive/folders/10c42kus7vjdGmf6k1hbLeiq81zJye-_b?usp=drive_link',
+            github_url: null,
             points: [
                 'Mengevaluasi SOP pelaporan bug yang berjalan dan merancang ulang alur proses antara tim support dan developer.',
                 'Merancang ulang alur SOP dengan menyederhanakan langkah prosedural, mendefinisikan peran & tanggung jawab, serta membuat template laporan bug dan flowchart.',
@@ -239,6 +241,8 @@ export default function PortfolioIndex({
             period: 'Nov 2023 – Des 2023',
             badge: 'Virtual Internship (Skor 87.47)',
             tech: ['Microsoft Excel', 'Pivot Table', 'SWOT Analysis', 'HR Software Simulation'],
+            project_url: 'https://drive.google.com/drive/folders/1KbPZsgMy2EwDpQSJ0BUHTPz7VB7ID-h3?usp=drive_link',
+            github_url: null,
             points: [
                 'Proyek konsultasi berbasis data untuk simulasi implementasi perangkat lunak Human Resources (HR) guna meningkatkan efisiensi.',
                 'Mengolah data kepegawaian, analisis performa dengan Microsoft Excel (pivot table, visualisasi data), dan menyusun strategi negosiasi dengan analisis SWOT.',
@@ -251,6 +255,8 @@ export default function PortfolioIndex({
             period: 'Jan 2023 – Feb 2023',
             badge: 'Virtual Internship',
             tech: ['UML Modeling', 'DFD', 'ERD', 'Use Case', 'Activity Diagram'],
+            project_url: 'https://best-emu-e9d.notion.site/Project-Based-Virtual-Intern-fb58b73147714ce2a2070ea99d1eef8a',
+            github_url: null,
             points: [
                 'Digitalisasi sistem pendaftaran pasien berbasis daring untuk mengatasi inefisiensi administrasi manual.',
                 'Merancang dokumentasi sistem dan memetakan alur proses kerja bagi tiga jenis pengguna: pasien, admin, dan front office.',
@@ -263,6 +269,8 @@ export default function PortfolioIndex({
             period: 'Sep 2022 – Okt 2022',
             badge: 'Virtual Internship (Skor 83.75)',
             tech: ['Microsoft Excel', 'Microsoft Access', 'BI Dashboard', 'Sales Analytics'],
+            project_url: 'https://drive.google.com/file/d/1isuTOao2y1Cs6zzWOXtfMrp9dKI0n5xI/view',
+            github_url: null,
             points: [
                 'Analisis data transaksi multi-sumber (produk, kategori, nasabah) untuk mengidentifikasi peluang peningkatan penjualan.',
                 'Membangun dashboard analitis sederhana menggunakan Microsoft Excel & Access untuk visualisasi tren konsumsi pelanggan.',
@@ -287,6 +295,8 @@ export default function PortfolioIndex({
             period: 'Apr 2021 – Jul 2021',
             badge: 'Academic Internship (Nilai A)',
             tech: ['CodeIgniter', 'PHP', 'MySQL', 'Bootstrap', 'UML & ERD'],
+            project_url: 'https://drive.google.com/file/d/1Wqk2qeqlswQxsr4xcQSizIyy8obuuuN6/view',
+            github_url: 'https://github.com/br4masta/ci4app-Project-Tugas-Akhir',
             points: [
                 'Pengembangan sistem informasi manajemen tugas akhir untuk Fakultas Teknik guna mendigitalisasi proses administrasi akademik.',
                 'Merancang dan mengembangkan aplikasi berbasis framework CodeIgniter dengan database MySQL.',
@@ -1362,6 +1372,43 @@ export default function PortfolioIndex({
                                             {t}
                                         </span>
                                     ))}
+                                </div>
+                            )}
+
+                            {(exp.project_url || exp.github_url) && (
+                                <div
+                                    className={`flex items-center gap-2 pt-4 border-t mt-4 ${
+                                        isDark ? 'border-white/[0.08]' : 'border-black/[0.08]'
+                                    }`}
+                                >
+                                    {exp.project_url && (
+                                        <a
+                                            href={exp.project_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] ${
+                                                isDark
+                                                    ? 'bg-white text-black hover:bg-neutral-200'
+                                                    : 'bg-black text-white hover:bg-neutral-800'
+                                            }`}
+                                        >
+                                            <i className="ph-bold ph-arrow-square-out text-sm"></i> Detail Proyek / Dokumen
+                                        </a>
+                                    )}
+                                    {exp.github_url && (
+                                        <a
+                                            href={exp.github_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`py-2 px-3 border rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] ${
+                                                isDark
+                                                    ? 'bg-white/5 hover:bg-white/15 text-white border-white/15'
+                                                    : 'bg-black/5 hover:bg-black/15 text-black border-black/15'
+                                            }`}
+                                        >
+                                            <i className="ph-bold ph-github-logo text-base"></i> GitHub
+                                        </a>
+                                    )}
                                 </div>
                             )}
                         </div>
