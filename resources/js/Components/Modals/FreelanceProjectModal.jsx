@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
+import DynamicTagInput from '@/Components/Common/DynamicTagInput';
 
 export default function FreelanceProjectModal({ isOpen, onClose, project = null }) {
     const { data, setData, post, put, processing, errors, reset } = useForm({
@@ -7,7 +8,7 @@ export default function FreelanceProjectModal({ isOpen, onClose, project = null 
         client_name: '',
         role_scope: '',
         period: '',
-        tech_stack: '',
+        tech_stack: [],
         description: '',
         project_url: '',
         github_url: '',
@@ -23,7 +24,11 @@ export default function FreelanceProjectModal({ isOpen, onClose, project = null 
                 client_name: project.client_name || '',
                 role_scope: project.role_scope || '',
                 period: project.period || '',
-                tech_stack: Array.isArray(project.tech_stack) ? project.tech_stack.join(', ') : '',
+                tech_stack: Array.isArray(project.tech_stack)
+                    ? project.tech_stack
+                    : typeof project.tech_stack === 'string' && project.tech_stack.trim()
+                    ? project.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
+                    : [],
                 description: project.description || '',
                 project_url: project.project_url || '',
                 github_url: project.github_url || '',
@@ -38,7 +43,7 @@ export default function FreelanceProjectModal({ isOpen, onClose, project = null 
                 client_name: '',
                 role_scope: '',
                 period: '',
-                tech_stack: '',
+                tech_stack: [],
                 description: '',
                 project_url: '',
                 github_url: '',
@@ -54,11 +59,10 @@ export default function FreelanceProjectModal({ isOpen, onClose, project = null 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const formattedSkills = data.tech_stack
+        const formattedSkills = Array.isArray(data.tech_stack)
             ? data.tech_stack
-                  .split(',')
-                  .map((s) => s.trim())
-                  .filter(Boolean)
+            : typeof data.tech_stack === 'string' && data.tech_stack.trim()
+            ? data.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
             : [];
 
         const payload = {
@@ -187,19 +191,18 @@ export default function FreelanceProjectModal({ isOpen, onClose, project = null 
                         </div>
                     </div>
 
-                    {/* Tech Stack */}
-                    <div>
-                        <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                            Tech Stack (Pisahkan koma)
-                        </label>
-                        <input
-                            type="text"
-                            value={data.tech_stack}
-                            onChange={(e) => setData('tech_stack', e.target.value)}
-                            placeholder="CodeIgniter, PHP, MySQL, Bootstrap, UML"
-                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-xs"
-                        />
-                    </div>
+                    {/* Tech Stack Dinamis & Bebas */}
+                    <DynamicTagInput
+                        tags={data.tech_stack}
+                        onChange={(newTags) => setData('tech_stack', newTags)}
+                        label="Tech Stack & Tags Bebas (Dinamis)"
+                        placeholder="Ketik tag bebas lalu tekan Enter atau koma..."
+                        suggestions={[
+                            'Laravel', 'CodeIgniter', 'PHP', 'React', 'Next.js', 'Vue.js',
+                            'MySQL', 'PostgreSQL', 'Bootstrap', 'TailwindCSS', 'REST API',
+                            'Express.js', 'Node.js', 'Informatika', 'IoT', 'Flutter', 'Docker'
+                        ]}
+                    />
 
                     {/* URLs */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

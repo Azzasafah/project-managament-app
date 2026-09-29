@@ -397,7 +397,16 @@ export default function Dashboard({
 
     const savePortfolio = (e) => {
         e.preventDefault();
-        router.post(`/tasks/${portfolioModal.taskId}/portfolio`, portfolioModal.form, {
+        const formattedTech = Array.isArray(portfolioModal.form.tech_stack)
+            ? portfolioModal.form.tech_stack
+            : typeof portfolioModal.form.tech_stack === 'string' && portfolioModal.form.tech_stack.trim()
+            ? portfolioModal.form.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
+            : [];
+
+        router.post(`/tasks/${portfolioModal.taskId}/portfolio`, {
+            ...portfolioModal.form,
+            tech_stack: formattedTech,
+        }, {
             preserveScroll: true,
             onSuccess: () => {
                 setPortfolioModal((prev) => ({ ...prev, open: false }));
@@ -410,7 +419,11 @@ export default function Dashboard({
         router.post(`/tasks/${task.id}/portfolio`, {
             is_portfolio: !task.is_portfolio,
             portfolio_summary: task.portfolio_summary || task.description || '',
-            tech_stack: Array.isArray(task.tech_stack) ? task.tech_stack.join(', ') : task.tech_stack || '',
+            tech_stack: Array.isArray(task.tech_stack)
+                ? task.tech_stack
+                : typeof task.tech_stack === 'string' && task.tech_stack.trim()
+                ? task.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
+                : [],
             github_url: task.github_url || '',
             live_url: task.live_url || '',
             button_display_mode: task.button_display_mode || 'both',
@@ -746,7 +759,11 @@ export default function Dashboard({
                                     form: {
                                         is_portfolio: task.is_portfolio ? true : true,
                                         portfolio_summary: task.portfolio_summary || task.description || '',
-                                        tech_stack: Array.isArray(task.tech_stack) ? task.tech_stack.join(', ') : task.tech_stack || '',
+                                        tech_stack: Array.isArray(task.tech_stack)
+                                            ? task.tech_stack
+                                            : typeof task.tech_stack === 'string' && task.tech_stack.trim()
+                                            ? task.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
+                                            : [],
                                         github_url: task.github_url || '',
                                         live_url: task.live_url || '',
                                         button_display_mode: task.button_display_mode || 'both',
@@ -768,7 +785,11 @@ export default function Dashboard({
                                     form: {
                                         is_portfolio: true,
                                         portfolio_summary: task.portfolio_summary || task.description || '',
-                                        tech_stack: Array.isArray(task.tech_stack) ? task.tech_stack.join(', ') : task.tech_stack || '',
+                                        tech_stack: Array.isArray(task.tech_stack)
+                                            ? task.tech_stack
+                                            : typeof task.tech_stack === 'string' && task.tech_stack.trim()
+                                            ? task.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
+                                            : [],
                                         github_url: task.github_url || '',
                                         live_url: task.live_url || '',
                                         button_display_mode: task.button_display_mode || 'both',

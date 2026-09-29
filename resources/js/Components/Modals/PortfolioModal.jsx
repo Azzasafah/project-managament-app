@@ -1,4 +1,5 @@
 import React from 'react';
+import DynamicTagInput from '@/Components/Common/DynamicTagInput';
 
 export default function PortfolioModal({
     isOpen,
@@ -70,24 +71,24 @@ export default function PortfolioModal({
                         />
                     </div>
 
-                    {/* Tech Stack */}
-                    <div>
-                        <label className="block text-xs font-mono font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                            Tech Stack (Pisahkan koma)
-                        </label>
-                        <input
-                            type="text"
-                            value={form.tech_stack}
-                            onChange={(e) =>
-                                setForm({
-                                    ...form,
-                                    tech_stack: e.target.value,
-                                })
-                            }
-                            placeholder="Python, PySpark, Airflow, Delta Lake, PostgreSQL"
-                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono focus:ring-2 focus:ring-black focus:outline-none transition-all shadow-xs"
-                        />
-                    </div>
+                    {/* Tech Stack Dinamis & Bebas */}
+                    <DynamicTagInput
+                        tags={form.tech_stack}
+                        onChange={(newTags) =>
+                            setForm({
+                                ...form,
+                                tech_stack: newTags,
+                            })
+                        }
+                        label="Tech Stack & Tags Bebas (Dinamis)"
+                        placeholder="Ketik tag bebas lalu tekan Enter atau koma..."
+                        suggestions={[
+                            'Python', 'PySpark', 'Airflow', 'Delta Lake', 'PostgreSQL',
+                            'Laravel', 'React', 'Next.js', 'TypeScript', 'Docker',
+                            'FastAPI', 'TailwindCSS', 'Azure', 'GCP', 'Kafka', 'Redis',
+                            'REST API', 'MySQL', 'Node.js', 'Clean Architecture'
+                        ]}
+                    />
 
                     {/* URLs */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

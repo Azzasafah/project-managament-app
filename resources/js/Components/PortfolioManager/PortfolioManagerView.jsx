@@ -112,61 +112,83 @@ export default function PortfolioManagerView({
             </div>
 
             {/* Sub Tabs Selector */}
-            <div className="flex items-center gap-1.5 p-1.5 bg-slate-200/80 rounded-2xl max-w-2xl overflow-x-auto no-scrollbar">
+            <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 border border-slate-200 rounded-2xl w-full max-w-4xl shadow-xs">
                 <button
+                    type="button"
                     onClick={() => setSubTab('portfolio')}
-                    className={`flex-1 min-w-[150px] py-2 px-3.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    className={`py-2 px-4 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                         subTab === 'portfolio'
-                            ? 'bg-white text-slate-900 shadow-xs'
-                            : 'text-slate-600 hover:text-slate-900'
+                            ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                     }`}
                 >
                     <i className="ph-bold ph-folder-star text-sm"></i>
-                    Portofolio ({portfolioProjects.length})
+                    <span>Portofolio</span>
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">
+                        {portfolioProjects.length}
+                    </span>
                 </button>
+
                 <button
+                    type="button"
                     onClick={() => setSubTab('freelance')}
-                    className={`flex-1 min-w-[190px] py-2 px-3.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    className={`py-2 px-4 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                         subTab === 'freelance'
-                            ? 'bg-white text-slate-900 shadow-xs'
-                            : 'text-slate-600 hover:text-slate-900'
+                            ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                     }`}
                 >
                     <i className="ph-bold ph-briefcase text-sm"></i>
-                    Kerja & Magang ({freelanceProjects.length})
+                    <span>Kerja & Magang</span>
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">
+                        {freelanceProjects.length}
+                    </span>
                 </button>
+
                 <button
+                    type="button"
                     onClick={() => setSubTab('certifications')}
-                    className={`flex-1 min-w-[140px] py-2 px-3.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    className={`py-2 px-4 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                         subTab === 'certifications'
-                            ? 'bg-white text-slate-900 shadow-xs'
-                            : 'text-slate-600 hover:text-slate-900'
+                            ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                     }`}
                 >
                     <i className="ph-bold ph-seal-check text-sm"></i>
-                    Sertifikasi ({certifications.length})
+                    <span>Sertifikasi</span>
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">
+                        {certifications.length}
+                    </span>
                 </button>
+
                 <button
+                    type="button"
                     onClick={() => setSubTab('faqs')}
-                    className={`flex-1 min-w-[110px] py-2 px-3.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    className={`py-2 px-4 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                         subTab === 'faqs'
-                            ? 'bg-white text-slate-900 shadow-xs'
-                            : 'text-slate-600 hover:text-slate-900'
+                            ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                     }`}
                 >
                     <i className="ph-bold ph-question text-sm"></i>
-                    FAQ ({faqs.length})
+                    <span>FAQ</span>
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">
+                        {faqs.length}
+                    </span>
                 </button>
+
                 <button
+                    type="button"
                     onClick={() => setSubTab('mascot')}
-                    className={`flex-1 min-w-[170px] py-2 px-3.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    className={`py-2 px-4 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                         subTab === 'mascot'
-                            ? 'bg-white text-slate-900 shadow-xs'
-                            : 'text-slate-600 hover:text-slate-900'
+                            ? 'bg-black text-white shadow-sm'
+                            : 'text-slate-700 hover:text-black hover:bg-white/80 bg-white/40'
                     }`}
                 >
-                    <i className="ph-bold ph-sparkle text-sm text-emerald-500"></i>
-                    Maskot & Voice AI
+                    <i className={`ph-bold ph-sparkle text-sm ${subTab === 'mascot' ? 'text-emerald-400' : 'text-emerald-600'}`}></i>
+                    <span>Maskot & Voice AI</span>
+                    <span className={`w-2 h-2 rounded-full ${subTab === 'mascot' ? 'bg-emerald-400 animate-pulse' : 'bg-emerald-500'}`}></span>
                 </button>
             </div>
 
@@ -237,19 +259,26 @@ export default function PortfolioManagerView({
                                                 </p>
                                             </div>
 
-                                            {/* Tech Stack */}
-                                            {Array.isArray(proj.tech_stack) && proj.tech_stack.length > 0 && (
-                                                <div className="flex flex-wrap gap-1">
-                                                    {proj.tech_stack.map((tech, idx) => (
-                                                        <span
-                                                            key={idx}
-                                                            className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-100 text-slate-700 border border-slate-200"
-                                                        >
-                                                            {tech}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            )}
+                                            {/* Tech Stack Dinamis */}
+                                            {(() => {
+                                                const tags = Array.isArray(proj.tech_stack)
+                                                    ? proj.tech_stack
+                                                    : typeof proj.tech_stack === 'string' && proj.tech_stack.trim()
+                                                    ? proj.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
+                                                    : [];
+                                                return tags.length > 0 ? (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {tags.map((tech, idx) => (
+                                                            <span
+                                                                key={idx}
+                                                                className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-100 text-slate-700 border border-slate-200"
+                                                            >
+                                                                {tech}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                ) : null;
+                                            })()}
 
                                             {/* URL badges & Button display mode */}
                                             <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono text-slate-500 pt-1">
@@ -456,18 +485,25 @@ export default function PortfolioManagerView({
                                             </p>
                                         )}
 
-                                        {Array.isArray(project.tech_stack) && project.tech_stack.length > 0 && (
-                                            <div className="flex flex-wrap gap-1">
-                                                {project.tech_stack.map((tech, idx) => (
-                                                    <span
-                                                        key={idx}
-                                                        className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-100 text-slate-700 border border-slate-200"
-                                                    >
-                                                        {tech}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        )}
+                                        {(() => {
+                                            const tags = Array.isArray(project.tech_stack)
+                                                ? project.tech_stack
+                                                : typeof project.tech_stack === 'string' && project.tech_stack.trim()
+                                                ? project.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
+                                                : [];
+                                            return tags.length > 0 ? (
+                                                <div className="flex flex-wrap gap-1">
+                                                    {tags.map((tech, idx) => (
+                                                        <span
+                                                            key={idx}
+                                                            className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-100 text-slate-700 border border-slate-200"
+                                                        >
+                                                            {tech}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            ) : null;
+                                        })()}
                                     </div>
 
                                     {/* Action Bar */}

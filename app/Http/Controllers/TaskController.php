@@ -77,12 +77,16 @@ class TaskController extends Controller
             'github_url' => 'nullable|string',
             'live_url' => 'nullable|string',
             'button_display_mode' => 'nullable|in:both,live,github',
-            'tech_stack' => 'nullable|string',
+            'tech_stack' => 'nullable',
         ]);
 
         $techStackArray = null;
         if (!empty($validated['tech_stack'])) {
-            $techStackArray = array_map('trim', explode(',', $validated['tech_stack']));
+            if (is_array($validated['tech_stack'])) {
+                $techStackArray = array_values(array_filter(array_map('trim', $validated['tech_stack'])));
+            } else {
+                $techStackArray = array_values(array_filter(array_map('trim', explode(',', $validated['tech_stack']))));
+            }
         }
 
         $task->update([

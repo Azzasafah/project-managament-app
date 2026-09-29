@@ -15,7 +15,7 @@ class FreelanceProjectController extends Controller
             'client_name' => ['required', 'string', 'max:255'],
             'role_scope' => ['nullable', 'string', 'max:255'],
             'period' => ['nullable', 'string', 'max:100'],
-            'tech_stack' => ['nullable', 'array'],
+            'tech_stack' => ['nullable'],
             'description' => ['nullable', 'string'],
             'project_url' => ['nullable', 'url', 'max:500'],
             'github_url' => ['nullable', 'url', 'max:500'],
@@ -23,6 +23,14 @@ class FreelanceProjectController extends Controller
             'order_index' => ['nullable', 'integer'],
             'is_active' => ['nullable', 'boolean'],
         ]);
+
+        if (isset($validated['tech_stack'])) {
+            if (is_string($validated['tech_stack'])) {
+                $validated['tech_stack'] = array_values(array_filter(array_map('trim', explode(',', $validated['tech_stack']))));
+            } elseif (is_array($validated['tech_stack'])) {
+                $validated['tech_stack'] = array_values(array_filter(array_map('trim', $validated['tech_stack'])));
+            }
+        }
 
         $validated['is_active'] = $request->boolean('is_active', true);
         $validated['order_index'] = $request->input('order_index', 0);
@@ -44,7 +52,7 @@ class FreelanceProjectController extends Controller
             'client_name' => ['required', 'string', 'max:255'],
             'role_scope' => ['nullable', 'string', 'max:255'],
             'period' => ['nullable', 'string', 'max:100'],
-            'tech_stack' => ['nullable', 'array'],
+            'tech_stack' => ['nullable'],
             'description' => ['nullable', 'string'],
             'project_url' => ['nullable', 'url', 'max:500'],
             'github_url' => ['nullable', 'url', 'max:500'],
@@ -52,6 +60,14 @@ class FreelanceProjectController extends Controller
             'order_index' => ['nullable', 'integer'],
             'is_active' => ['nullable', 'boolean'],
         ]);
+
+        if (isset($validated['tech_stack'])) {
+            if (is_string($validated['tech_stack'])) {
+                $validated['tech_stack'] = array_values(array_filter(array_map('trim', explode(',', $validated['tech_stack']))));
+            } elseif (is_array($validated['tech_stack'])) {
+                $validated['tech_stack'] = array_values(array_filter(array_map('trim', $validated['tech_stack'])));
+            }
+        }
 
         $validated['is_active'] = $request->boolean('is_active', true);
         $validated['order_index'] = $request->input('order_index', 0);
