@@ -1,70 +1,70 @@
 {
-  "_vendor-Dxy9IOzN.js": {
-    "file": "assets/vendor-Dxy9IOzN.js",
+  "_vendor-D4C1myqM.js": {
+    "file": "assets/vendor-D4C1myqM.js",
     "name": "vendor"
   },
   "resources/css/app.css": {
-    "file": "assets/app-CVUhmcZF.css",
+    "file": "assets/app-CAkjYIW-.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/Pages/Auth/Login.jsx": {
-    "file": "assets/Login-BoMsJ685.js",
+    "file": "assets/Login-CnxtLndo.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_vendor-Dxy9IOzN.js"
+      "_vendor-D4C1myqM.js"
     ]
   },
   "resources/js/Pages/Auth/Register.jsx": {
-    "file": "assets/Register-wH3XcjRl.js",
+    "file": "assets/Register-C1Zb3bux.js",
     "name": "Register",
     "src": "resources/js/Pages/Auth/Register.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_vendor-Dxy9IOzN.js"
+      "_vendor-D4C1myqM.js"
     ]
   },
   "resources/js/Pages/Dashboard.jsx": {
-    "file": "assets/Dashboard-BFYY55Uj.js",
+    "file": "assets/Dashboard-BuLkCuxh.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_vendor-Dxy9IOzN.js"
+      "_vendor-D4C1myqM.js"
     ]
   },
   "resources/js/Pages/Errors/404.jsx": {
-    "file": "assets/404-DoU12t5j.js",
+    "file": "assets/404-D6BaR8QW.js",
     "name": "404",
     "src": "resources/js/Pages/Errors/404.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_vendor-Dxy9IOzN.js"
+      "_vendor-D4C1myqM.js"
     ]
   },
   "resources/js/Pages/Portfolio/Index.jsx": {
-    "file": "assets/Index-CGwzm55S.js",
+    "file": "assets/Index-BsuEXS8A.js",
     "name": "Index",
     "src": "resources/js/Pages/Portfolio/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_vendor-Dxy9IOzN.js"
+      "_vendor-D4C1myqM.js"
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-bY84b-xa.js",
+    "file": "assets/app-BjIXSTlW.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
     "imports": [
-      "_vendor-Dxy9IOzN.js"
+      "_vendor-D4C1myqM.js"
     ],
     "dynamicImports": [
       "resources/js/Pages/Auth/Login.jsx",
@@ -74,7 +74,7 @@
       "resources/js/Pages/Portfolio/Index.jsx"
     ],
     "css": [
-      "assets/app-CVUhmcZF.css"
+      "assets/app-CAkjYIW-.css"
     ]
   }
 }

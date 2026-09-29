@@ -6,8 +6,51 @@ export default function PortfolioIndex({
     freelanceProjects = [],
     certifications = [],
     faqs = [],
+    mascot = null,
     user = null,
 }) {
+    const [isPlayingMascotAudio, setIsPlayingMascotAudio] = useState(false);
+    const [showMascotDialogue, setShowMascotDialogue] = useState(false);
+    const mascotAudioRef = React.useRef(null);
+
+    const activeMascot = {
+        name: mascot?.name || 'CHISA.SYS',
+        role: mascot?.role || 'AI // COMPANION',
+        avatar_url: mascot?.avatar_url || '/chisa.webp',
+        voice_url: mascot?.voice_url || '/sounds/001_No7 Morning.wav',
+        dialogue: mascot?.dialogue || 'Konnichiwa! Sistem neural azzasafah.my.id berjalan optimal. Senang bertemu denganmu!',
+        subtext: mascot?.subtext || 'HOLOGRAPHIC_UNIT',
+        badge_status: mascot?.badge_status || 'ACTIVE',
+        tagline_left: mascot?.tagline_left || 'DATA_ENG..BACKEND',
+        tagline_right: mascot?.tagline_right || 'V2026.9',
+    };
+
+    const handleMascotClick = () => {
+        setShowMascotDialogue(true);
+        if (activeMascot.voice_url) {
+            if (mascotAudioRef.current) {
+                mascotAudioRef.current.pause();
+                mascotAudioRef.current.currentTime = 0;
+            }
+            try {
+                const audio = new Audio(activeMascot.voice_url);
+                mascotAudioRef.current = audio;
+                setIsPlayingMascotAudio(true);
+                audio.play().then(() => {
+                    audio.onended = () => {
+                        setIsPlayingMascotAudio(false);
+                    };
+                }).catch((err) => {
+                    console.warn('Audio play error:', err);
+                    setIsPlayingMascotAudio(false);
+                });
+            } catch (e) {
+                console.error('Audio init error:', e);
+                setIsPlayingMascotAudio(false);
+            }
+        }
+    };
+
     const [theme, setTheme] = useState(() => {
         if (typeof window !== 'undefined') {
             return localStorage.getItem('portfolio_theme') || 'light';
@@ -839,9 +882,13 @@ export default function PortfolioIndex({
                         </div>
 
                         {/* Right Chisa Hologram Frame (5 cols) */}
-                        <div className="lg:col-span-5 flex justify-center lg:justify-end reveal-init reveal-delay-2">
+                        <div className="lg:col-span-5 flex flex-col items-center lg:items-end reveal-init reveal-delay-2">
                             <div
-                                className={`relative w-full max-w-[260px] sm:max-w-[300px] rounded-3xl border p-3.5 shadow-2xl group transition-all duration-500 overflow-hidden ${
+                                onClick={handleMascotClick}
+                                role="button"
+                                tabIndex={0}
+                                title="Klik untuk dengarkan suara dan dialog maskot"
+                                className={`relative w-full max-w-[260px] sm:max-w-[300px] rounded-3xl border p-3.5 shadow-2xl group transition-all duration-500 overflow-hidden cursor-pointer select-none active:scale-[0.98] ${
                                     isDark
                                         ? 'bg-[#0e0e12] border-white/15 hover:border-white/35 shadow-[0_12px_40px_rgba(0,0,0,0.6)]'
                                         : 'bg-white border-black/15 hover:border-black/35 shadow-[0_12px_36px_rgba(0,0,0,0.08)]'
@@ -859,9 +906,9 @@ export default function PortfolioIndex({
                                             isDark ? 'text-white' : 'text-black'
                                         }`}
                                     >
-                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> CHISA.SYS
+                                        <span className={`w-1.5 h-1.5 rounded-full ${isPlayingMascotAudio ? 'bg-emerald-400 animate-ping' : 'bg-emerald-400 animate-pulse'}`}></span> {activeMascot.name}
                                     </span>
-                                    <span className="font-semibold tracking-wider">AI // COMPANION</span>
+                                    <span className="font-semibold tracking-wider">{activeMascot.role}</span>
                                 </div>
 
                                 <div
@@ -869,27 +916,38 @@ export default function PortfolioIndex({
                                         isDark ? 'bg-[#050507] border-white/10' : 'bg-[#f0f0f2] border-black/10'
                                     }`}
                                 >
-                                    <picture>
-                                        <source srcSet="/chisa.webp" type="image/webp" />
-                                        <img
-                                            src="/chisa.png"
-                                            alt="Chisa Companion Visual"
-                                            width="300"
-                                            height="375"
-                                            loading="eager"
-                                            fetchPriority="high"
-                                            decoding="async"
-                                            className="w-full h-full object-cover object-top filter grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                                            onError={(e) => {
-                                                e.target.src = 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=300&auto=format&fit=crop';
-                                            }}
-                                        />
-                                    </picture>
+                                    <img
+                                        src={activeMascot.avatar_url}
+                                        alt={`${activeMascot.name} Companion Visual`}
+                                        width="300"
+                                        height="375"
+                                        loading="eager"
+                                        fetchPriority="high"
+                                        decoding="async"
+                                        className="w-full h-full object-cover object-top filter grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                                        onError={(e) => {
+                                            e.target.src = '/chisa.webp';
+                                        }}
+                                    />
                                     <div
                                         className={`absolute inset-0 bg-gradient-to-t via-transparent to-transparent opacity-70 pointer-events-none ${
                                             isDark ? 'from-[#0e0e12]' : 'from-white'
                                         }`}
                                     />
+
+                                    {/* Speaking / Audio Chip Badge */}
+                                    {isPlayingMascotAudio ? (
+                                        <div className="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded-full bg-emerald-500 text-black text-[9px] font-mono font-bold flex items-center gap-1 shadow-lg animate-pulse">
+                                            <i className="ph-fill ph-speaker-high"></i>
+                                            <span>SPEAKING</span>
+                                        </div>
+                                    ) : (
+                                        <div className="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[8px] font-mono opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 border border-white/20">
+                                            <i className="ph-bold ph-hand-tap"></i>
+                                            <span>KLIK SUARA</span>
+                                        </div>
+                                    )}
+
                                     <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between z-10">
                                         <span
                                             className={`text-[8px] font-mono px-2 py-0.5 rounded border backdrop-blur-xs ${
@@ -898,7 +956,7 @@ export default function PortfolioIndex({
                                                     : 'text-neutral-800 bg-white/85 border-black/20 font-bold'
                                             }`}
                                         >
-                                            HOLOGRAPHIC_UNIT
+                                            {activeMascot.subtext}
                                         </span>
                                         <span
                                             className={`text-[8px] font-mono px-2 py-0.5 rounded border ${
@@ -907,7 +965,7 @@ export default function PortfolioIndex({
                                                     : 'text-emerald-700 bg-emerald-50 border-emerald-300 font-bold'
                                             }`}
                                         >
-                                            ACTIVE
+                                            {activeMascot.badge_status}
                                         </span>
                                     </div>
                                 </div>
@@ -917,10 +975,82 @@ export default function PortfolioIndex({
                                         isDark ? 'text-neutral-400' : 'text-neutral-500'
                                     }`}
                                 >
-                                    <span>DATA_ENG_BACKEND</span>
-                                    <span>V2026.9</span>
+                                    <span>{activeMascot.tagline_left}</span>
+                                    <span>{activeMascot.tagline_right}</span>
                                 </div>
                             </div>
+
+                            {/* Interactive Dialogue Transmission Box right below the image */}
+                            {showMascotDialogue && (
+                                <div
+                                    className={`w-full max-w-[260px] sm:max-w-[300px] mt-3 p-3.5 rounded-2xl border transition-all duration-300 animate-in fade-in slide-in-from-top-2 ${
+                                        isDark
+                                            ? 'bg-[#0e0e12]/95 border-emerald-500/30 text-white shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
+                                            : 'bg-white/95 border-emerald-500/30 text-slate-900 shadow-[0_8px_24px_rgba(0,0,0,0.08)]'
+                                    }`}
+                                >
+                                    <div
+                                        className={`flex items-center justify-between pb-1.5 mb-2 border-b text-[9px] font-mono ${
+                                            isDark ? 'border-white/10 text-neutral-400' : 'border-slate-100 text-slate-500'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-1.5">
+                                            <span className={`w-1.5 h-1.5 rounded-full ${isPlayingMascotAudio ? 'bg-emerald-400 animate-ping' : 'bg-emerald-400'}`}></span>
+                                            <span className={`font-bold tracking-wider ${isDark ? 'text-white' : 'text-black'}`}>
+                                                {activeMascot.name} // VOICELINE
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center gap-1.5">
+                                            {isPlayingMascotAudio ? (
+                                                <span className="text-[8px] font-mono text-emerald-400 font-bold flex items-center gap-1">
+                                                    <i className="ph-fill ph-speaker-high animate-bounce"></i> PLAYING
+                                                </span>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleMascotClick();
+                                                    }}
+                                                    className="text-[8px] font-mono hover:text-emerald-400 flex items-center gap-1 cursor-pointer"
+                                                    title="Putar ulang suara"
+                                                >
+                                                    <i className="ph-bold ph-arrows-clockwise"></i> REPLAY
+                                                </button>
+                                            )}
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setShowMascotDialogue(false);
+                                                    if (mascotAudioRef.current) {
+                                                        mascotAudioRef.current.pause();
+                                                        setIsPlayingMascotAudio(false);
+                                                    }
+                                                }}
+                                                className="text-[8px] font-mono hover:text-rose-500 px-1 cursor-pointer"
+                                                title="Tutup pesan"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-xs font-sans leading-relaxed font-medium">
+                                        "{activeMascot.dialogue}"
+                                    </p>
+
+                                    <div
+                                        className={`mt-2.5 pt-1.5 border-t flex items-center justify-between text-[8px] font-mono ${
+                                            isDark ? 'border-white/5 text-neutral-500' : 'border-slate-100 text-slate-400'
+                                        }`}
+                                    >
+                                        <span>HOLOGRAPHIC_AUDIO</span>
+                                        <span className="text-emerald-500 font-bold">STATUS: TRANSMITTED</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

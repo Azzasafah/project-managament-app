@@ -58,6 +58,7 @@ export default function Dashboard({
     certifications = [],
     faqs = [],
     freelanceProjects = [],
+    mascot = null,
     deProjects = [],
     overallDeProgress = 0,
     bootcampSessions = [],
@@ -778,6 +779,7 @@ export default function Dashboard({
                             certifications={certifications}
                             freelanceProjects={freelanceProjects}
                             faqs={faqs}
+                            mascot={mascot}
                             onAddCert={() => setCertificationModal({ open: true, cert: null })}
                             onEditCert={(cert) => setCertificationModal({ open: true, cert })}
                             onDeleteCert={confirmDeleteCert}

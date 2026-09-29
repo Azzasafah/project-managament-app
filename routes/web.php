@@ -88,6 +88,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/safahflow/chores/toggle', [\App\Http\Controllers\SafahFlowController::class, 'toggleChore'])->name('safahflow.chores.toggle');
     Route::post('/safahflow/chores/pomodoro', [\App\Http\Controllers\SafahFlowController::class, 'logPomodoro'])->name('safahflow.chores.pomodoro');
     Route::post('/safahflow/daily-log', [\App\Http\Controllers\SafahFlowController::class, 'updateDailyLog'])->name('safahflow.dailyLog.update');
+
+    // Mascot & AI Companion Settings Routes
+    Route::post('/mascot-settings', [\App\Http\Controllers\MascotController::class, 'update'])->name('mascot.update');
+    Route::post('/mascot-settings/reset', [\App\Http\Controllers\MascotController::class, 'reset'])->name('mascot.reset');
 });
 
 // Fallback 404 Not Found Route

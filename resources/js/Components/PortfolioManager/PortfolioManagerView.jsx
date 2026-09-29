@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
+import MascotManagerSection from './MascotManagerSection';
 
 export default function PortfolioManagerView({
     portfolioProjects = [],
@@ -9,6 +10,7 @@ export default function PortfolioManagerView({
     certifications = [],
     freelanceProjects = [],
     faqs = [],
+    mascot = null,
     onAddCert,
     onEditCert,
     onDeleteCert,
@@ -19,7 +21,7 @@ export default function PortfolioManagerView({
     onEditFaq,
     onDeleteFaq,
 }) {
-    // Sub-tab selection: 'portfolio' | 'freelance' | 'certifications' | 'faqs'
+    // Sub-tab selection: 'portfolio' | 'freelance' | 'certifications' | 'faqs' | 'mascot'
     const [subTab, setSubTab] = useState('portfolio');
     const [showTaskPicker, setShowTaskPicker] = useState(false);
 
@@ -154,6 +156,17 @@ export default function PortfolioManagerView({
                 >
                     <i className="ph-bold ph-question text-sm"></i>
                     FAQ ({faqs.length})
+                </button>
+                <button
+                    onClick={() => setSubTab('mascot')}
+                    className={`flex-1 min-w-[170px] py-2 px-3.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                        subTab === 'mascot'
+                            ? 'bg-white text-slate-900 shadow-xs'
+                            : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                >
+                    <i className="ph-bold ph-sparkle text-sm text-emerald-500"></i>
+                    Maskot & Voice AI
                 </button>
             </div>
 
@@ -714,6 +727,13 @@ export default function PortfolioManagerView({
                         </div>
                     )}
                 </div>
+            )}
+
+            {/* ========================================================================= */}
+            {/* SUB TAB 5: MASKOT & VOICE AI MANAGEMENT */}
+            {/* ========================================================================= */}
+            {subTab === 'mascot' && (
+                <MascotManagerSection mascot={mascot} />
             )}
         </div>
     );
