@@ -10,6 +10,7 @@ export default function Sidebar({
     onCloseMobile,
     isCollapsed = false,
     onToggleCollapse,
+    onOpenProfile,
 }) {
     const [userMenuOpen, setUserMenuOpen] = useState(false);
 
@@ -93,7 +94,15 @@ export default function Sidebar({
                     </Link>
 
                     <div className="flex items-center justify-between p-2 rounded-2xl bg-white border border-slate-200/80">
-                        <div className="flex items-center gap-2.5 min-w-0">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (onCloseMobile) onCloseMobile();
+                                if (onOpenProfile) onOpenProfile();
+                            }}
+                            className="flex items-center gap-2.5 min-w-0 text-left hover:opacity-80 transition-opacity flex-1 cursor-pointer"
+                            title="Ubah Profil & Kredensial"
+                        >
                             <img
                                 src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.name)}&backgroundColor=f1f5f9`}
                                 alt="Avatar"
@@ -103,7 +112,7 @@ export default function Sidebar({
                                 <p className="text-xs font-bold truncate text-slate-900 leading-tight">{user.name}</p>
                                 <p className="text-[10px] text-slate-400 font-mono truncate">{user.email}</p>
                             </div>
-                        </div>
+                        </button>
 
                         <button
                             onClick={() => router.post('/logout')}
@@ -253,6 +262,16 @@ export default function Sidebar({
                                 <div className="px-3 py-1.5 border-b border-slate-100 text-[10px] font-mono text-slate-400 truncate">
                                     {user.email}
                                 </div>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setUserMenuOpen(false);
+                                        if (onOpenProfile) onOpenProfile();
+                                    }}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-xl text-xs font-mono font-bold transition-colors cursor-pointer"
+                                >
+                                    <i className="ph-bold ph-user-gear text-sm text-indigo-500"></i> Pengaturan Akun
+                                </button>
                                 <button
                                     onClick={() => router.post('/logout')}
                                     className="w-full flex items-center gap-2 px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-mono font-bold transition-colors cursor-pointer"

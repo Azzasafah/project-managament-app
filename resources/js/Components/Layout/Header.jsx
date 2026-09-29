@@ -10,6 +10,7 @@ export default function Header({
     isSidebarCollapsed = false,
     onToggleDesktopSidebar,
     onOpenSplash,
+    onOpenProfile,
 }) {
     const activeItem = navItems.find((n) => n.id === currentTab);
 
@@ -50,6 +51,14 @@ export default function Header({
                         title="Asisten Chisa AI"
                     >
                         <i className="ph-fill ph-sparkle text-indigo-500"></i>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onOpenProfile}
+                        className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm hover:bg-slate-200 transition-colors cursor-pointer"
+                        title="Pengaturan Akun & Password"
+                    >
+                        <i className="ph-bold ph-user-gear"></i>
                     </button>
                     <Link
                         href="/"
@@ -104,6 +113,14 @@ export default function Header({
                         title="Buka Asisten Chisa AI"
                     >
                         <i className="ph-fill ph-sparkle text-indigo-500 text-sm"></i> Chisa AI
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onOpenProfile}
+                        className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-mono font-bold transition-all shadow-xs flex items-center gap-1.5 active:scale-[0.98] cursor-pointer"
+                        title="Ubah Profil, Email & Kata Sandi"
+                    >
+                        <i className="ph-bold ph-user-gear text-sm text-indigo-500"></i> Akun
                     </button>
                     <Link
                         href="/"

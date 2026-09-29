@@ -74,4 +74,39 @@ class AuthController extends Controller
 
         return redirect()->route('login');
     }
+
+    public function updateProfile(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'current_password' => ['nullable', 'required_with:password'],
+            'password' => ['nullable', 'string', 'min:6', 'confirmed'],
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.unique' => 'Email ini telah digunakan oleh akun lain.',
+            'current_password.required_with' => 'Kata sandi saat ini diperlukan untuk membuat kata sandi baru.',
+            'password.min' => 'Kata sandi baru minimal terdiri dari 6 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
+        ]);
+
+        if (!empty($validated['password'])) {
+            if (!Hash::check($validated['current_password'], $user->password)) {
+                throw ValidationException::withMessages([
+                    'current_password' => 'Kata sandi saat ini yang Anda masukkan salah.',
+                ]);
+            }
+            $user->password = Hash::make($validated['password']);
+        }
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->save();
+
+        return back()->with('success', 'Profil dan kredensial akses berhasil diperbarui!');
+    }
 }

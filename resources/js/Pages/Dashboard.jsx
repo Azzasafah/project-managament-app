@@ -37,6 +37,7 @@ import RefreshingModal from '@/Components/Modals/RefreshingModal';
 import ConfirmDeleteModal from '@/Components/Modals/ConfirmDeleteModal';
 import SplashScreenModal from '@/Components/Modals/SplashScreenModal';
 import SleepReminderModal from '@/Components/Modals/SleepReminderModal';
+import ProfileModal from '@/Components/Modals/ProfileModal';
 
 // Utils
 import { toInputDateFormat, isDoneToday } from '@/Utils/dateHelpers';
@@ -117,6 +118,9 @@ export default function Dashboard({
             sessionStorage.setItem('safah_splash_shown', 'true');
         }
     };
+
+    // Profile & Credentials Modal
+    const [profileModalOpen, setProfileModalOpen] = useState(false);
 
     // 22:00 WIB Hard-Stop Sleep Reminder
     const [sleepReminderOpen, setSleepReminderOpen] = useState(false);
@@ -587,6 +591,7 @@ export default function Dashboard({
                 onCloseMobile={() => setMobileSidebarOpen(false)}
                 isCollapsed={desktopSidebarCollapsed}
                 onToggleCollapse={handleToggleDesktopSidebar}
+                onOpenProfile={() => setProfileModalOpen(true)}
             />
 
             {/* Main Content Area */}
@@ -601,6 +606,7 @@ export default function Dashboard({
                     isSidebarCollapsed={desktopSidebarCollapsed}
                     onToggleDesktopSidebar={handleToggleDesktopSidebar}
                     onOpenSplash={() => setShowSplash(true)}
+                    onOpenProfile={() => setProfileModalOpen(true)}
                 />
 
                 {/* Viewport Scroll Container */}
@@ -950,6 +956,14 @@ export default function Dashboard({
                 open={sleepReminderOpen}
                 onClose={handleCloseSleepReminder}
                 onSnooze={handleSnoozeSleepReminder}
+            />
+
+            {/* Profile & Credentials Management Modal */}
+            <ProfileModal
+                open={profileModalOpen}
+                user={user}
+                onClose={() => setProfileModalOpen(false)}
+                onToast={addToast}
             />
         </div>
     );

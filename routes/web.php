@@ -27,6 +27,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Authenticated Workspace Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 
     // Tasks & Kanban Routes
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
