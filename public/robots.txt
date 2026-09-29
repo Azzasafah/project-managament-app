@@ -10,6 +10,7 @@ Disallow: /tasks
 Disallow: /journals
 Disallow: /kajian
 Disallow: /wellbeing
+Disallow: /mascot-settings
 
-# Sitemap Location (ganti domain saat sudah online)
-Sitemap: https://safah.dev/sitemap.xml
+# Sitemap Location
+Sitemap: https://azzasafah.my.id/sitemap.xml

@@ -4,7 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title inertia>Muhammad Hafizh Azzasafah — Portfolio</title>
+    <title inertia>Muhammad Hafizh Azzasafah (~Safah) — Data Engineer & Backend Portfolio</title>
+    
+    <!-- Primary SEO Meta Tags -->
+    <meta name="description" content="Portfolio resmi Muhammad Hafizh Azzasafah (~Safah) — Data Engineer & Backend Developer, Sarjana Teknik Informatika Cum Laude (GPA 3.90/4.00), 3x Microsoft Azure Certified.">
+    <meta name="author" content="Muhammad Hafizh Azzasafah">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://azzasafah.my.id/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://azzasafah.my.id/">
+    <meta property="og:title" content="Muhammad Hafizh Azzasafah (~Safah) — Data Engineer Portfolio">
+    <meta property="og:description" content="Portfolio Data Engineering, Backend Architecture & Cloud Infrastructure. Sarjana Teknik Informatika Cum Laude.">
+    <meta property="og:image" content="https://azzasafah.my.id/chisa.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://azzasafah.my.id/">
+    <meta name="twitter:title" content="Muhammad Hafizh Azzasafah (~Safah) — Data Engineer Portfolio">
+    <meta name="twitter:description" content="Portfolio Data Engineering, Backend Architecture & Cloud Infrastructure.">
+    <meta name="twitter:image" content="https://azzasafah.my.id/chisa.png">
+
+    <!-- Google Search Console Verification -->
+    <meta name="google-site-verification" content="NeMN0HJaXQmCo7mxy8im9jC3B_AZe2uLHST3Yful27I" />
 
     <!-- PWA & Android Meta Tags -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
