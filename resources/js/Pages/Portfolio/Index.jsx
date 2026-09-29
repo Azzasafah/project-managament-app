@@ -17,12 +17,21 @@ export default function PortfolioIndex({
 
     const [scrollProgress, setScrollProgress] = useState(0);
     const [activeProjectFilter, setActiveProjectFilter] = useState('ALL');
+    const [projectPage, setProjectPage] = useState(1);
+    const PROJECTS_PER_PAGE = 4;
+
     const [activeCertFilter, setActiveCertFilter] = useState('ALL'); // 'ALL' | 'official' | 'internship'
     const [certPage, setCertPage] = useState(1);
     const CERTS_PER_PAGE = 4;
 
     const [freelancePage, setFreelancePage] = useState(1);
     const FREELANCE_PER_PAGE = 6;
+
+    const [expPage, setExpPage] = useState(1);
+    const EXP_PER_PAGE = 4;
+
+    const [previewCertModal, setPreviewCertModal] = useState(null);
+    const [copiedCertId, setCopiedCertId] = useState(false);
 
     const [activeFaqCategory, setActiveFaqCategory] = useState('ALL');
     const [openFaqId, setOpenFaqId] = useState(null);
@@ -78,7 +87,7 @@ export default function PortfolioIndex({
             window.removeEventListener('scroll', handleScroll);
             observer.disconnect();
         };
-    }, [projects, freelanceProjects, certifications, certPage, freelancePage, activeCertFilter, activeProjectFilter]);
+    }, [projects, freelanceProjects, certifications, certPage, freelancePage, projectPage, expPage, activeCertFilter, activeProjectFilter]);
 
     // Typewriter Phrases Loop (Data Engineer, Fullstack Web Backend, Cloud)
     const phrases = [
@@ -123,17 +132,69 @@ export default function PortfolioIndex({
         return () => clearTimeout(timer);
     }, [currentText, isDeleting, currentPhraseIndex, typingSpeed]);
 
+    // Modal Escape Key & Body Scroll Lock
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                setPreviewCertModal(null);
+            }
+        };
+        if (previewCertModal) {
+            window.addEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'unset';
+        };
+    }, [previewCertModal]);
+
     // Unique tags derived dynamically from Kanban projects
     const availableProjectTags = [
         'ALL',
         ...Array.from(new Set(projects.map((p) => p.tag).filter(Boolean))),
     ];
 
-    // Filter projects
+    // Filter & Paginate projects
     const filteredProjects = projects.filter((proj) => {
         if (activeProjectFilter === 'ALL') return true;
         return proj.tag === activeProjectFilter;
     });
+
+    const totalProjectPages = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE) || 1;
+    const paginatedProjects = filteredProjects.slice(
+        (projectPage - 1) * PROJECTS_PER_PAGE,
+        projectPage * PROJECTS_PER_PAGE
+    );
+
+    const handleProjectFilterChange = (tag) => {
+        setActiveProjectFilter(tag);
+        setProjectPage(1);
+    };
+
+    // Helper for Embedding Google Drive or direct PDF
+    const getEmbedPreviewUrl = (url) => {
+        if (!url) return null;
+        const trimmed = url.trim();
+        const driveMatch = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+        if (driveMatch && driveMatch[1]) {
+            return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+        }
+        const driveIdMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+        if (trimmed.includes('drive.google.com') && driveIdMatch && driveIdMatch[1]) {
+            return `https://drive.google.com/file/d/${driveIdMatch[1]}/preview`;
+        }
+        return trimmed;
+    };
+
+    const copyCertId = (id) => {
+        if (!id) return;
+        navigator.clipboard.writeText(id);
+        setCopiedCertId(true);
+        setTimeout(() => setCopiedCertId(false), 2500);
+    };
 
     // Filter & Paginate certifications
     const filteredCertifications = certifications.filter((cert) => {
@@ -315,6 +376,13 @@ export default function PortfolioIndex({
             ],
         },
     ];
+
+    // Paginate Experiences
+    const totalExpPages = Math.ceil(workExperiences.length / EXP_PER_PAGE) || 1;
+    const paginatedExperiences = workExperiences.slice(
+        (expPage - 1) * EXP_PER_PAGE,
+        expPage * EXP_PER_PAGE
+    );
 
     const isDark = theme === 'dark';
 
@@ -888,7 +956,7 @@ export default function PortfolioIndex({
                         {availableProjectTags.map((tag) => (
                             <button
                                 key={tag}
-                                onClick={() => setActiveProjectFilter(tag)}
+                                onClick={() => handleProjectFilterChange(tag)}
                                 className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer active:scale-95 ${
                                     activeProjectFilter === tag
                                         ? isDark
@@ -917,127 +985,178 @@ export default function PortfolioIndex({
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {filteredProjects.map((proj, idx) => {
-                            const buttonMode = proj.button_display_mode || 'both';
-                            const showLive = (buttonMode === 'both' || buttonMode === 'live') && proj.live_url;
-                            const showGithub = (buttonMode === 'both' || buttonMode === 'github') && proj.github_url;
-                            const onlyOneButton = (showLive && !showGithub) || (!showLive && showGithub);
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {paginatedProjects.map((proj, idx) => {
+                                const buttonMode = proj.button_display_mode || 'both';
+                                const showLive = (buttonMode === 'both' || buttonMode === 'live') && proj.live_url;
+                                const showGithub = (buttonMode === 'both' || buttonMode === 'github') && proj.github_url;
+                                const onlyOneButton = (showLive && !showGithub) || (!showLive && showGithub);
 
-                            return (
-                                <article
-                                    key={proj.id}
-                                    className={`p-6 sm:p-7 rounded-3xl border flex flex-col justify-between group transition-all duration-300 relative overflow-hidden reveal-init ${
-                                        idx % 2 === 1 ? 'reveal-delay-1' : ''
-                                    } ${
-                                        isDark
-                                            ? 'bg-[#111116]/85 border-white/10 hover:border-white/30 hover:bg-[#15151c] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]'
-                                            : 'bg-white border-black/10 hover:border-black/30 hover:shadow-xl'
-                                    }`}
-                                >
-                                    <div>
-                                        <div className="flex items-center justify-between mb-4">
-                                            <span
-                                                className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase border ${
+                                return (
+                                    <article
+                                        key={proj.id}
+                                        className={`p-6 sm:p-7 rounded-3xl border flex flex-col justify-between group transition-all duration-300 relative overflow-hidden reveal-init ${
+                                            idx % 2 === 1 ? 'reveal-delay-1' : ''
+                                        } ${
+                                            isDark
+                                                ? 'bg-[#111116]/85 border-white/10 hover:border-white/30 hover:bg-[#15151c] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]'
+                                                : 'bg-white border-black/10 hover:border-black/30 hover:shadow-xl'
+                                        }`}
+                                    >
+                                        <div>
+                                            <div className="flex items-center justify-between mb-4">
+                                                <span
+                                                    className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase border ${
+                                                        isDark
+                                                            ? 'bg-white/10 text-white border-white/15'
+                                                            : 'bg-black/5 text-black border-black/15'
+                                                    }`}
+                                                >
+                                                    {proj.tag}
+                                                </span>
+                                                <span
+                                                    className={`text-[10px] font-mono font-bold tracking-widest ${
+                                                        isDark ? 'text-neutral-400' : 'text-neutral-500'
+                                                    }`}
+                                                >
+                                                    0{((projectPage - 1) * PROJECTS_PER_PAGE) + idx + 1} // PORTFOLIO_PROJ
+                                                </span>
+                                            </div>
+
+                                            <h3
+                                                className={`font-display text-lg sm:text-xl font-bold transition-colors leading-snug mb-3 tracking-tight ${
                                                     isDark
-                                                        ? 'bg-white/10 text-white border-white/15'
-                                                        : 'bg-black/5 text-black border-black/15'
+                                                        ? 'text-white group-hover:text-neutral-100'
+                                                        : 'text-black group-hover:text-neutral-800'
                                                 }`}
                                             >
-                                                {proj.tag}
-                                            </span>
-                                            <span
-                                                className={`text-[10px] font-mono font-bold tracking-widest ${
-                                                    isDark ? 'text-neutral-400' : 'text-neutral-500'
+                                                {proj.title}
+                                            </h3>
+
+                                            <p
+                                                className={`text-xs sm:text-sm leading-relaxed mb-6 font-sans ${
+                                                    isDark ? 'text-neutral-400' : 'text-neutral-600'
                                                 }`}
                                             >
-                                                0{idx + 1} // PORTFOLIO_PROJ
-                                            </span>
+                                                {proj.portfolio_summary ||
+                                                    proj.description ||
+                                                    'Implementasi arsitektur teruji siap production.'}
+                                            </p>
+
+                                            {Array.isArray(proj.tech_stack) && proj.tech_stack.length > 0 && (
+                                                <div className="flex flex-wrap gap-1.5 mb-6">
+                                                    {proj.tech_stack.map((tech, i) => (
+                                                        <span
+                                                            key={i}
+                                                            className={`px-2 py-0.5 rounded-md text-[10px] font-mono border ${
+                                                                isDark
+                                                                    ? 'bg-white/5 text-neutral-300 border-white/10'
+                                                                    : 'bg-black/5 text-neutral-700 border-black/10'
+                                                            }`}
+                                                        >
+                                                            {tech}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
 
-                                        <h3
-                                            className={`font-display text-lg sm:text-xl font-bold transition-colors leading-snug mb-3 tracking-tight ${
-                                                isDark
-                                                    ? 'text-white group-hover:text-neutral-100'
-                                                    : 'text-black group-hover:text-neutral-800'
-                                            }`}
-                                        >
-                                            {proj.title}
-                                        </h3>
-
-                                        <p
-                                            className={`text-xs sm:text-sm leading-relaxed mb-6 font-sans ${
-                                                isDark ? 'text-neutral-400' : 'text-neutral-600'
-                                            }`}
-                                        >
-                                            {proj.portfolio_summary ||
-                                                proj.description ||
-                                                'Implementasi arsitektur teruji siap production.'}
-                                        </p>
-
-                                        {Array.isArray(proj.tech_stack) && proj.tech_stack.length > 0 && (
-                                            <div className="flex flex-wrap gap-1.5 mb-6">
-                                                {proj.tech_stack.map((tech, i) => (
-                                                    <span
-                                                        key={i}
-                                                        className={`px-2 py-0.5 rounded-md text-[10px] font-mono border ${
+                                        {/* Action Row - Respecting User's Configured Button Mode */}
+                                        {(showLive || showGithub) && (
+                                            <div
+                                                className={`flex items-center gap-2 pt-4 border-t mt-auto ${
+                                                    isDark ? 'border-white/[0.08]' : 'border-black/[0.08]'
+                                                }`}
+                                            >
+                                                {showLive && (
+                                                    <a
+                                                        href={proj.live_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className={`${
+                                                            onlyOneButton ? 'w-full' : 'flex-1'
+                                                        } py-2.5 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] ${
                                                             isDark
-                                                                ? 'bg-white/5 text-neutral-300 border-white/10'
-                                                                : 'bg-black/5 text-neutral-700 border-black/10'
+                                                                ? 'bg-white text-black hover:bg-neutral-200'
+                                                                : 'bg-black text-white hover:bg-neutral-800'
                                                         }`}
                                                     >
-                                                        {tech}
-                                                    </span>
-                                                ))}
+                                                        <i className="ph-bold ph-arrow-square-out text-sm"></i> Live Demo
+                                                    </a>
+                                                )}
+                                                {showGithub && (
+                                                    <a
+                                                        href={proj.github_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className={`${
+                                                            onlyOneButton ? 'w-full' : 'flex-1'
+                                                        } py-2.5 px-3 border rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] ${
+                                                            isDark
+                                                                ? 'bg-white/5 hover:bg-white/15 text-white border-white/15'
+                                                                : 'bg-black/5 hover:bg-black/15 text-black border-black/15'
+                                                        }`}
+                                                    >
+                                                        <i className="ph-bold ph-github-logo text-base"></i> Code / GitHub
+                                                    </a>
+                                                )}
                                             </div>
                                         )}
-                                    </div>
+                                    </article>
+                                );
+                            })}
+                        </div>
 
-                                    {/* Action Row - Respecting User's Configured Button Mode */}
-                                    {(showLive || showGithub) && (
-                                        <div
-                                            className={`flex items-center gap-2 pt-4 border-t mt-auto ${
-                                                isDark ? 'border-white/[0.08]' : 'border-black/[0.08]'
-                                            }`}
-                                        >
-                                            {showLive && (
-                                                <a
-                                                    href={proj.live_url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={`${
-                                                        onlyOneButton ? 'w-full' : 'flex-1'
-                                                    } py-2.5 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] ${
-                                                        isDark
-                                                            ? 'bg-white text-black hover:bg-neutral-200'
-                                                            : 'bg-black text-white hover:bg-neutral-800'
-                                                    }`}
-                                                >
-                                                    <i className="ph-bold ph-arrow-square-out text-sm"></i> Live Demo
-                                                </a>
-                                            )}
-                                            {showGithub && (
-                                                <a
-                                                    href={proj.github_url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={`${
-                                                        onlyOneButton ? 'w-full' : 'flex-1'
-                                                    } py-2.5 px-3 border rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] ${
-                                                        isDark
-                                                            ? 'bg-white/5 hover:bg-white/15 text-white border-white/15'
-                                                            : 'bg-black/5 hover:bg-black/15 text-black border-black/15'
-                                                    }`}
-                                                >
-                                                    <i className="ph-bold ph-github-logo text-base"></i> Code / GitHub
-                                                </a>
-                                            )}
-                                        </div>
-                                    )}
-                                </article>
-                            );
-                        })}
-                    </div>
+                        {/* Portfolio Pagination Controls */}
+                        {totalProjectPages > 1 && (
+                            <div className="flex items-center justify-center gap-2 pt-10 reveal-init">
+                                <button
+                                    onClick={() => setProjectPage((prev) => Math.max(prev - 1, 1))}
+                                    disabled={projectPage === 1}
+                                    aria-label="Previous Page"
+                                    className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                                        isDark
+                                            ? 'bg-white/5 hover:bg-white/10 text-white border-white/10'
+                                            : 'bg-white hover:bg-slate-50 text-black border-slate-200 shadow-xs'
+                                    }`}
+                                >
+                                    &larr; Prev
+                                </button>
+
+                                {Array.from({ length: totalProjectPages }, (_, i) => i + 1).map((pg) => (
+                                    <button
+                                        key={pg}
+                                        onClick={() => setProjectPage(pg)}
+                                        className={`w-9 h-9 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                                            projectPage === pg
+                                                ? isDark
+                                                    ? 'bg-white text-black shadow-md'
+                                                    : 'bg-black text-white shadow-md'
+                                                : isDark
+                                                ? 'bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10'
+                                                : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                                        }`}
+                                    >
+                                        {pg}
+                                    </button>
+                                ))}
+
+                                <button
+                                    onClick={() => setProjectPage((prev) => Math.min(prev + 1, totalProjectPages))}
+                                    disabled={projectPage === totalProjectPages}
+                                    aria-label="Next Page"
+                                    className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                                        isDark
+                                            ? 'bg-white/5 hover:bg-white/10 text-white border-white/10'
+                                            : 'bg-white hover:bg-slate-50 text-black border-slate-200 shadow-xs'
+                                    }`}
+                                >
+                                    Next &rarr;
+                                </button>
+                            </div>
+                        )}
+                    </>
                 )}
             </section>
 
@@ -1293,7 +1412,7 @@ export default function PortfolioIndex({
                 </div>
 
                 <div className="space-y-4">
-                    {workExperiences.map((exp, expIdx) => (
+                    {paginatedExperiences.map((exp, expIdx) => (
                         <div
                             key={expIdx}
                             className={`p-6 sm:p-7 rounded-3xl border transition-all duration-300 reveal-init ${
@@ -1414,6 +1533,55 @@ export default function PortfolioIndex({
                         </div>
                     ))}
                 </div>
+
+                {/* Experience Pagination Controls */}
+                {totalExpPages > 1 && (
+                    <div className="flex items-center justify-center gap-2 pt-10 reveal-init">
+                        <button
+                            onClick={() => setExpPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={expPage === 1}
+                            aria-label="Previous Page"
+                            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                                isDark
+                                    ? 'bg-white/5 hover:bg-white/10 text-white border-white/10'
+                                    : 'bg-white hover:bg-slate-50 text-black border-slate-200 shadow-xs'
+                            }`}
+                        >
+                            &larr; Prev
+                        </button>
+
+                        {Array.from({ length: totalExpPages }, (_, i) => i + 1).map((pg) => (
+                            <button
+                                key={pg}
+                                onClick={() => setExpPage(pg)}
+                                className={`w-9 h-9 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                                    expPage === pg
+                                        ? isDark
+                                            ? 'bg-white text-black shadow-md'
+                                            : 'bg-black text-white shadow-md'
+                                        : isDark
+                                        ? 'bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10'
+                                        : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                                }`}
+                            >
+                                {pg}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={() => setExpPage((prev) => Math.min(prev + 1, totalExpPages))}
+                            disabled={expPage === totalExpPages}
+                            aria-label="Next Page"
+                            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                                isDark
+                                    ? 'bg-white/5 hover:bg-white/10 text-white border-white/10'
+                                    : 'bg-white hover:bg-slate-50 text-black border-slate-200 shadow-xs'
+                            }`}
+                        >
+                            Next &rarr;
+                        </button>
+                    </div>
+                )}
             </section>
 
             {/* ========================================================================= */}
@@ -1696,19 +1864,18 @@ export default function PortfolioIndex({
                                         </div>
 
                                         {cert.credential_url ? (
-                                            <a
-                                                href={cert.credential_url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-1.5 active:scale-[0.98] shadow-sm ${
+                                            <button
+                                                type="button"
+                                                onClick={() => setPreviewCertModal(cert)}
+                                                className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-1.5 active:scale-[0.98] shadow-sm cursor-pointer ${
                                                     isDark
                                                         ? 'bg-white text-black hover:bg-neutral-200'
                                                         : 'bg-black text-white hover:bg-neutral-800'
                                                 }`}
                                             >
-                                                <i className="ph-bold ph-arrow-square-out text-sm"></i>
+                                                <i className="ph-bold ph-seal-check text-sm"></i>
                                                 Verifikasi
-                                            </a>
+                                            </button>
                                         ) : (
                                             <span
                                                 className={`text-[10px] font-mono px-3 py-1.5 rounded-xl border ${
@@ -2176,6 +2343,232 @@ export default function PortfolioIndex({
                     </div>
                 </div>
             </footer>
+
+            {/* ========================================================================= */}
+            {/* POP-UP MODAL: VERIFIKASI KREDENSIAL & PREVIEW PDF // HRD QUICK VIEWER */}
+            {/* ========================================================================= */}
+            {previewCertModal && (
+                <div
+                    className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fade-in"
+                    onClick={() => setPreviewCertModal(null)}
+                >
+                    <div
+                        className={`max-w-4xl w-full max-h-[92vh] flex flex-col rounded-3xl border shadow-2xl overflow-hidden transition-all ${
+                            isDark
+                                ? 'bg-[#0c0c12] border-white/15 text-white shadow-[0_25px_60px_rgba(0,0,0,0.85)]'
+                                : 'bg-white border-black/15 text-slate-900 shadow-2xl'
+                        }`}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Modal Header */}
+                        <div
+                            className={`p-5 sm:p-6 border-b flex items-start justify-between gap-4 ${
+                                isDark ? 'border-white/10 bg-white/[0.02]' : 'border-slate-100 bg-slate-50/60'
+                            }`}
+                        >
+                            <div className="space-y-1.5 flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span
+                                        className={`px-2.5 py-0.5 rounded-lg text-[10px] font-mono font-bold uppercase border flex items-center gap-1 ${
+                                            previewCertModal.type === 'official'
+                                                ? isDark
+                                                    ? 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30'
+                                                    : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                                                : isDark
+                                                ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30'
+                                                : 'bg-cyan-50 text-cyan-700 border-cyan-200'
+                                        }`}
+                                    >
+                                        <i className={`ph-bold ${previewCertModal.type === 'official' ? 'ph-seal-check' : 'ph-briefcase'}`}></i>
+                                        {previewCertModal.type === 'official' ? 'SERTIFIKASI RESMI' : 'MAGANG & PROGRAM'}
+                                    </span>
+                                    {previewCertModal.issue_date && (
+                                        <span className={`text-[11px] font-mono font-bold ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                                            &bull; {previewCertModal.issue_date}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <h3 className={`font-display text-lg sm:text-xl font-black tracking-tight leading-snug truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                                    {previewCertModal.title}
+                                </h3>
+
+                                <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
+                                    <span className={`font-semibold flex items-center gap-1 ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+                                        <i className="ph-bold ph-buildings text-neutral-400"></i>
+                                        {previewCertModal.issuer}
+                                    </span>
+
+                                    {previewCertModal.credential_id && (
+                                        <button
+                                            type="button"
+                                            onClick={() => copyCertId(previewCertModal.credential_id)}
+                                            className={`px-2 py-0.5 rounded-md border text-[11px] flex items-center gap-1 transition-all cursor-pointer ${
+                                                isDark
+                                                    ? 'bg-white/5 hover:bg-white/15 text-neutral-300 border-white/10'
+                                                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                                            }`}
+                                            title="Klik untuk salin ID Kredensial"
+                                        >
+                                            <i className={`ph-bold ${copiedCertId ? 'ph-check text-emerald-400' : 'ph-copy'}`}></i>
+                                            <span>ID: {previewCertModal.credential_id}</span>
+                                            {copiedCertId && <span className="text-[10px] text-emerald-400 font-bold">Tersalin!</span>}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Header Actions */}
+                            <div className="flex items-center gap-2 shrink-0">
+                                {previewCertModal.credential_url && (
+                                    <a
+                                        href={previewCertModal.credential_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-colors text-sm ${
+                                            isDark
+                                                ? 'bg-white/5 hover:bg-white/15 text-neutral-300 border-white/10'
+                                                : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                                        }`}
+                                        title="Buka di Tab Baru"
+                                    >
+                                        <i className="ph-bold ph-arrow-square-out"></i>
+                                    </a>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => setPreviewCertModal(null)}
+                                    className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-colors cursor-pointer ${
+                                        isDark
+                                            ? 'bg-white/5 hover:bg-white/15 text-neutral-300 border-white/10'
+                                            : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                                    }`}
+                                    title="Tutup (Esc)"
+                                >
+                                    <i className="ph-bold ph-x text-base"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1 custom-scroll">
+                            {/* Description & Competencies */}
+                            {(previewCertModal.description || (Array.isArray(previewCertModal.skills) && previewCertModal.skills.length > 0)) && (
+                                <div
+                                    className={`p-4 rounded-2xl border space-y-2.5 ${
+                                        isDark ? 'bg-white/[0.02] border-white/10' : 'bg-slate-50 border-slate-200/80'
+                                    }`}
+                                >
+                                    {previewCertModal.description && (
+                                        <p className={`text-xs sm:text-sm leading-relaxed font-sans ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+                                            {previewCertModal.description}
+                                        </p>
+                                    )}
+
+                                    {Array.isArray(previewCertModal.skills) && previewCertModal.skills.length > 0 && (
+                                        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                                            <span className={`text-[10px] font-mono font-bold uppercase tracking-wider ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                                                Kompetensi Teruji:
+                                            </span>
+                                            {previewCertModal.skills.map((skill, sIdx) => (
+                                                <span
+                                                    key={sIdx}
+                                                    className={`px-2 py-0.5 rounded-md text-[10px] font-mono border ${
+                                                        isDark
+                                                            ? 'bg-white/5 text-neutral-300 border-white/10'
+                                                            : 'bg-white text-neutral-800 border-slate-200 font-medium'
+                                                    }`}
+                                                >
+                                                    {skill}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Live PDF & Document Embed Viewer Frame */}
+                            <div
+                                className={`relative rounded-2xl border overflow-hidden h-[420px] sm:h-[500px] w-full flex flex-col ${
+                                    isDark ? 'bg-[#050508] border-white/10' : 'bg-[#f8fafc] border-slate-200'
+                                }`}
+                            >
+                                <div
+                                    className={`px-4 py-2 border-b flex items-center justify-between text-[11px] font-mono ${
+                                        isDark ? 'border-white/10 bg-white/[0.03] text-neutral-400' : 'border-slate-200 bg-white text-slate-500'
+                                    }`}
+                                >
+                                    <span className="flex items-center gap-1.5 font-bold">
+                                        <i className="ph-bold ph-file-pdf text-rose-500"></i>
+                                        <span>LIVE_DOCUMENT_PREVIEW // HRD_VERIFICATION</span>
+                                    </span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+                                        EMBED_ACTIVE
+                                    </span>
+                                </div>
+
+                                {previewCertModal.credential_url ? (
+                                    <iframe
+                                        src={getEmbedPreviewUrl(previewCertModal.credential_url)}
+                                        title={previewCertModal.title}
+                                        className="w-full flex-1 border-0"
+                                        allow="autoplay"
+                                        loading="lazy"
+                                    />
+                                ) : (
+                                    <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+                                        <i className="ph-bold ph-file-x text-4xl text-neutral-400 mb-2"></i>
+                                        <p className="text-xs font-mono text-neutral-500">
+                                            Dokumen fisik sertifikat ini terdaftar resmi secara offline atau internal institusi.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div
+                            className={`p-4 sm:p-5 border-t flex flex-col sm:flex-row items-center justify-between gap-3 ${
+                                isDark ? 'border-white/10 bg-white/[0.02]' : 'border-slate-100 bg-slate-50/60'
+                            }`}
+                        >
+                            <div className="text-[11px] font-mono text-neutral-400 flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span>Kredensial Terverifikasi Resmi &bull; Muhammad Hafizh Azzasafah</span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                {previewCertModal.credential_url && (
+                                    <a
+                                        href={previewCertModal.credential_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
+                                            isDark
+                                                ? 'bg-white/10 hover:bg-white/20 text-white'
+                                                : 'bg-slate-200 hover:bg-slate-300 text-slate-800'
+                                        }`}
+                                    >
+                                        <i className="ph-bold ph-arrow-square-out text-sm"></i>
+                                        <span>Buka Tab Baru</span>
+                                    </a>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => setPreviewCertModal(null)}
+                                    className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                                        isDark
+                                            ? 'bg-white text-black hover:bg-neutral-200'
+                                            : 'bg-black text-white hover:bg-neutral-800'
+                                    }`}
+                                >
+                                    Tutup Preview
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

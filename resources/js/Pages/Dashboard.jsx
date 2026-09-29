@@ -70,6 +70,13 @@ export default function Dashboard({
     const { auth } = usePage().props;
     const user = auth?.user || { name: 'Admin User', email: 'admin@personalhub.test' };
 
+    const allTasks = [
+        ...(projects?.todo || []),
+        ...(projects?.inProgress || []),
+        ...(projects?.done || []),
+    ];
+    const portfolioTasks = allTasks.filter((t) => Boolean(t.is_portfolio));
+
     // Navigation state & Hamburger Sidebar Controls
     const [currentTab, setCurrentTab] = useState('dashboard');
     const [currentTime, setCurrentTime] = useState('00:00:00');
@@ -395,6 +402,20 @@ export default function Dashboard({
                 setPortfolioModal((prev) => ({ ...prev, open: false }));
                 addToast('Status portofolio berhasil diperbarui.');
             },
+        });
+    };
+
+    const toggleTaskPortfolio = (task) => {
+        router.post(`/tasks/${task.id}/portfolio`, {
+            is_portfolio: !task.is_portfolio,
+            portfolio_summary: task.portfolio_summary || task.description || '',
+            tech_stack: Array.isArray(task.tech_stack) ? task.tech_stack.join(', ') : task.tech_stack || '',
+            github_url: task.github_url || '',
+            live_url: task.live_url || '',
+            button_display_mode: task.button_display_mode || 'both',
+        }, {
+            preserveScroll: true,
+            onSuccess: () => addToast(task.is_portfolio ? 'Tugas disembunyikan dari portofolio.' : 'Tugas ditampilkan di portofolio!'),
         });
     };
 
@@ -737,6 +758,23 @@ export default function Dashboard({
                     {/* TAB: PORTFOLIO CONTENT CMS */}
                     {currentTab === 'portfolio_manager' && (
                         <PortfolioManagerView
+                            portfolioProjects={portfolioTasks}
+                            allTasks={allTasks}
+                            onEditPortfolio={(task) =>
+                                setPortfolioModal({
+                                    open: true,
+                                    taskId: task.id,
+                                    form: {
+                                        is_portfolio: true,
+                                        portfolio_summary: task.portfolio_summary || task.description || '',
+                                        tech_stack: Array.isArray(task.tech_stack) ? task.tech_stack.join(', ') : task.tech_stack || '',
+                                        github_url: task.github_url || '',
+                                        live_url: task.live_url || '',
+                                        button_display_mode: task.button_display_mode || 'both',
+                                    },
+                                })
+                            }
+                            onTogglePortfolio={toggleTaskPortfolio}
                             certifications={certifications}
                             freelanceProjects={freelanceProjects}
                             faqs={faqs}
