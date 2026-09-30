@@ -215,6 +215,7 @@ class DashboardController extends Controller
             'certifications' => $certifications,
             'faqs' => $faqs,
             'freelanceProjects' => $freelanceProjects,
+            'workExperiences' => \App\Services\WorkExperienceService::all(),
             'mascot' => \App\Services\MascotSettingService::get(),
 
             // SafahFlow Props

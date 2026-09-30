@@ -92,6 +92,12 @@ Route::middleware(['auth'])->group(function () {
     // Mascot & AI Companion Settings Routes
     Route::post('/mascot-settings', [\App\Http\Controllers\MascotController::class, 'update'])->name('mascot.update');
     Route::post('/mascot-settings/reset', [\App\Http\Controllers\MascotController::class, 'reset'])->name('mascot.reset');
+
+    // Work Experience & Internship Management Routes
+    Route::post('/work-experiences', [\App\Http\Controllers\WorkExperienceController::class, 'store'])->name('work-experiences.store');
+    Route::put('/work-experiences/{id}', [\App\Http\Controllers\WorkExperienceController::class, 'update'])->name('work-experiences.update');
+    Route::post('/work-experiences/{id}/toggle', [\App\Http\Controllers\WorkExperienceController::class, 'toggle'])->name('work-experiences.toggle');
+    Route::delete('/work-experiences/{id}', [\App\Http\Controllers\WorkExperienceController::class, 'destroy'])->name('work-experiences.destroy');
 });
 
 // Fallback 404 Not Found Route

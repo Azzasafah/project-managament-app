@@ -4,6 +4,7 @@ import { Head, Link } from '@inertiajs/react';
 export default function PortfolioIndex({
     projects = [],
     freelanceProjects = [],
+    workExperiences: initialWorkExperiences = [],
     certifications = [],
     faqs = [],
     mascot = null,
@@ -311,8 +312,8 @@ export default function PortfolioIndex({
         },
     ];
 
-    // Work Experience & Internships
-    const workExperiences = [
+    // Work Experience & Internships (Default Fallback)
+    const defaultExperiences = [
         {
             title: 'Backend Developer (Internship)',
             company: 'Evermos x Rakamin Academy',
@@ -419,6 +420,13 @@ export default function PortfolioIndex({
             ],
         },
     ];
+
+    const activeExperiencesList =
+        initialWorkExperiences && initialWorkExperiences.length > 0
+            ? initialWorkExperiences
+            : defaultExperiences;
+
+    const workExperiences = activeExperiencesList.filter((exp) => exp.is_active !== false);
 
     // Paginate Experiences
     const totalExpPages = Math.ceil(workExperiences.length / EXP_PER_PAGE) || 1;

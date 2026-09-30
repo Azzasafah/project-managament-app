@@ -38,6 +38,7 @@ import ConfirmDeleteModal from '@/Components/Modals/ConfirmDeleteModal';
 import SplashScreenModal from '@/Components/Modals/SplashScreenModal';
 import SleepReminderModal from '@/Components/Modals/SleepReminderModal';
 import ProfileModal from '@/Components/Modals/ProfileModal';
+import WorkExperienceModal from '@/Components/Modals/WorkExperienceModal';
 
 // Utils
 import { toInputDateFormat, isDoneToday } from '@/Utils/dateHelpers';
@@ -58,6 +59,7 @@ export default function Dashboard({
     certifications = [],
     faqs = [],
     freelanceProjects = [],
+    workExperiences = [],
     mascot = null,
     deProjects = [],
     overallDeProgress = 0,
@@ -210,6 +212,11 @@ export default function Dashboard({
     const [faqModal, setFaqModal] = useState({
         open: false,
         faq: null,
+    });
+
+    const [workExperienceModal, setWorkExperienceModal] = useState({
+        open: false,
+        experience: null,
     });
 
     const [journalModal, setJournalModal] = useState({
@@ -572,6 +579,17 @@ export default function Dashboard({
         });
     };
 
+    const confirmDeleteExperience = (exp) => {
+        setDeleteModal({
+            open: true,
+            type: 'work_experience',
+            id: exp.id,
+            itemName: `${exp.title} (${exp.company})`,
+            title: 'Hapus Pengalaman Kerja & Magang?',
+            isDeleting: false,
+        });
+    };
+
     // Execute Delete Confirmation
     const handleExecuteDelete = () => {
         setDeleteModal((prev) => ({ ...prev, isDeleting: true }));
@@ -584,6 +602,7 @@ export default function Dashboard({
             cert: `/certifications/${deleteModal.id}`,
             freelance: `/freelance-projects/${deleteModal.id}`,
             faq: `/faqs/${deleteModal.id}`,
+            work_experience: `/work-experiences/${deleteModal.id}`,
         };
 
         const successMsgMap = {
@@ -594,6 +613,7 @@ export default function Dashboard({
             cert: 'Kredensial sertifikasi berhasil dihapus.',
             freelance: 'Proyek freelance berhasil dihapus.',
             faq: 'FAQ berhasil dihapus.',
+            work_experience: 'Pengalaman kerja & magang berhasil dihapus.',
         };
 
         router.delete(urlMap[deleteModal.type], {
@@ -799,6 +819,7 @@ export default function Dashboard({
                             onTogglePortfolio={toggleTaskPortfolio}
                             certifications={certifications}
                             freelanceProjects={freelanceProjects}
+                            workExperiences={workExperiences}
                             faqs={faqs}
                             mascot={mascot}
                             onAddCert={() => setCertificationModal({ open: true, cert: null })}
@@ -807,6 +828,9 @@ export default function Dashboard({
                             onAddFreelance={() => setFreelanceModal({ open: true, project: null })}
                             onEditFreelance={(project) => setFreelanceModal({ open: true, project })}
                             onDeleteFreelance={confirmDeleteFreelance}
+                            onAddExperience={() => setWorkExperienceModal({ open: true, experience: null })}
+                            onEditExperience={(exp) => setWorkExperienceModal({ open: true, experience: exp })}
+                            onDeleteExperience={confirmDeleteExperience}
                             onAddFaq={() => setFaqModal({ open: true, faq: null })}
                             onEditFaq={(faq) => setFaqModal({ open: true, faq })}
                             onDeleteFaq={confirmDeleteFaq}
@@ -966,6 +990,12 @@ export default function Dashboard({
                 isOpen={freelanceModal.open}
                 project={freelanceModal.project}
                 onClose={() => setFreelanceModal({ open: false, project: null })}
+            />
+
+            <WorkExperienceModal
+                isOpen={workExperienceModal.open}
+                experience={workExperienceModal.experience}
+                onClose={() => setWorkExperienceModal({ open: false, experience: null })}
             />
 
             <FaqModal

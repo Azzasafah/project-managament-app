@@ -9,6 +9,7 @@ export default function PortfolioManagerView({
     onTogglePortfolio,
     certifications = [],
     freelanceProjects = [],
+    workExperiences = [],
     faqs = [],
     mascot = null,
     onAddCert,
@@ -17,11 +18,14 @@ export default function PortfolioManagerView({
     onAddFreelance,
     onEditFreelance,
     onDeleteFreelance,
+    onAddExperience,
+    onEditExperience,
+    onDeleteExperience,
     onAddFaq,
     onEditFaq,
     onDeleteFaq,
 }) {
-    // Sub-tab selection: 'portfolio' | 'freelance' | 'certifications' | 'faqs' | 'mascot'
+    // Sub-tab selection: 'portfolio' | 'freelance' | 'experience' | 'certifications' | 'faqs' | 'mascot'
     const [subTab, setSubTab] = useState('portfolio');
     const [showTaskPicker, setShowTaskPicker] = useState(false);
 
@@ -35,6 +39,12 @@ export default function PortfolioManagerView({
 
     const handleToggleFreelance = (projectId) => {
         router.post(`/freelance-projects/${projectId}/toggle`, {}, {
+            preserveScroll: true,
+        });
+    };
+
+    const handleToggleExperience = (experienceId) => {
+        router.post(`/work-experiences/${experienceId}/toggle`, {}, {
             preserveScroll: true,
         });
     };
@@ -54,7 +64,7 @@ export default function PortfolioManagerView({
                         Manajemen Konten Portofolio
                     </h2>
                     <p className="text-xs sm:text-sm text-slate-500 mt-1 font-sans">
-                        Atur proyek portofolio, rekam jejak pengalaman kerja & magang, kredensial sertifikasi resmi, dan FAQ.
+                        Atur proyek portofolio, proyek freelance, pengalaman kerja & magang, sertifikasi resmi, dan FAQ.
                     </p>
                 </div>
 
@@ -85,7 +95,17 @@ export default function PortfolioManagerView({
                             className="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-xl text-xs font-mono font-bold shadow-md flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
                         >
                             <i className="ph-bold ph-plus-circle text-base"></i>
-                            Tambah Pengalaman / Proyek
+                            Tambah Proyek Freelance
+                        </button>
+                    )}
+
+                    {subTab === 'experience' && (
+                        <button
+                            onClick={onAddExperience}
+                            className="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-xl text-xs font-mono font-bold shadow-md flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                        >
+                            <i className="ph-bold ph-plus-circle text-base"></i>
+                            Tambah Pengalaman Kerja & Magang
                         </button>
                     )}
 
@@ -112,7 +132,7 @@ export default function PortfolioManagerView({
             </div>
 
             {/* Sub Tabs Selector */}
-            <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 border border-slate-200 rounded-2xl w-full max-w-4xl shadow-xs">
+            <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 border border-slate-200 rounded-2xl w-full max-w-5xl shadow-xs">
                 <button
                     type="button"
                     onClick={() => setSubTab('portfolio')}
@@ -138,10 +158,26 @@ export default function PortfolioManagerView({
                             : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                     }`}
                 >
+                    <i className="ph-bold ph-buildings text-sm"></i>
+                    <span>Proyek Freelance</span>
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">
+                        {freelanceProjects.length}
+                    </span>
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => setSubTab('experience')}
+                    className={`py-2 px-4 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                        subTab === 'experience'
+                            ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                    }`}
+                >
                     <i className="ph-bold ph-briefcase text-sm"></i>
                     <span>Kerja & Magang</span>
                     <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">
-                        {freelanceProjects.length}
+                        {workExperiences.length}
                     </span>
                 </button>
 
@@ -416,24 +452,24 @@ export default function PortfolioManagerView({
             )}
 
             {/* ========================================================================= */}
-            {/* SUB TAB 2: PENGALAMAN KERJA & MAGANG (FREELANCE PROJECTS / INTERNSHIPS) */}
+            {/* SUB TAB 2: PROYEK FREELANCE & KLIEN */}
             {/* ========================================================================= */}
             {subTab === 'freelance' && (
                 <div className="space-y-4">
                     {freelanceProjects.length === 0 ? (
                         <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
                             <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center text-2xl mx-auto mb-3">
-                                <i className="ph-bold ph-briefcase"></i>
+                                <i className="ph-bold ph-buildings"></i>
                             </div>
-                            <h3 className="font-display font-bold text-slate-900 text-base">Belum Ada Pengalaman Kerja & Magang</h3>
+                            <h3 className="font-display font-bold text-slate-900 text-base">Belum Ada Proyek Freelance</h3>
                             <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-5 font-sans">
-                                Tambahkan riwayat proyek freelance, kontrak kerja, atau program magang Anda untuk memperkuat portofolio dinamis.
+                                Tambahkan riwayat proyek freelance, kontrak kerja, atau klien Anda untuk memperkuat portofolio dinamis.
                             </p>
                             <button
                                 onClick={onAddFreelance}
                                 className="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-xl text-xs font-mono font-bold shadow-md cursor-pointer active:scale-[0.98]"
                             >
-                                + Tambah Pengalaman / Proyek Pertama
+                                + Tambah Proyek Freelance Pertama
                             </button>
                         </div>
                     ) : (
@@ -537,14 +573,157 @@ export default function PortfolioManagerView({
                                             <button
                                                 onClick={() => onEditFreelance(project)}
                                                 className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-black hover:text-white text-slate-700 flex items-center justify-center transition-colors text-sm cursor-pointer active:scale-95"
-                                                title="Edit Pengalaman / Proyek"
+                                                title="Edit Proyek Freelance"
                                             >
                                                 <i className="ph-bold ph-pencil-simple"></i>
                                             </button>
                                             <button
                                                 onClick={() => onDeleteFreelance(project)}
                                                 className="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors text-sm cursor-pointer active:scale-95"
-                                                title="Hapus Pengalaman / Proyek"
+                                                title="Hapus Proyek Freelance"
+                                            >
+                                                <i className="ph-bold ph-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* ========================================================================= */}
+            {/* SUB TAB 3: PENGALAMAN KERJA & MAGANG */}
+            {/* ========================================================================= */}
+            {subTab === 'experience' && (
+                <div className="space-y-4">
+                    {workExperiences.length === 0 ? (
+                        <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
+                            <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center text-2xl mx-auto mb-3">
+                                <i className="ph-bold ph-briefcase"></i>
+                            </div>
+                            <h3 className="font-display font-bold text-slate-900 text-base">Belum Ada Pengalaman Kerja & Magang</h3>
+                            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-5 font-sans">
+                                Tambahkan riwayat pengalaman kerja purna waktu, paruh waktu, magang industri, atau asisten dosen untuk memperkuat rekam jejak profesional.
+                            </p>
+                            <button
+                                onClick={onAddExperience}
+                                className="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-xl text-xs font-mono font-bold shadow-md cursor-pointer active:scale-[0.98]"
+                            >
+                                + Tambah Pengalaman Kerja & Magang Pertama
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {workExperiences.map((exp) => (
+                                <div
+                                    key={exp.id}
+                                    className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs hover:border-slate-400 transition-all flex flex-col justify-between"
+                                >
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between gap-2">
+                                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase bg-amber-50 text-amber-900 border border-amber-200 flex items-center gap-1.5">
+                                                <i className="ph-bold ph-tag"></i>
+                                                {exp.badge || 'Experience'}
+                                            </span>
+
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleToggleExperience(exp.id)}
+                                                    className={`px-2 py-0.5 rounded-md text-[9px] font-mono font-bold cursor-pointer transition-colors ${
+                                                        exp.is_active !== false
+                                                            ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
+                                                            : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                                                    }`}
+                                                >
+                                                    {exp.is_active !== false ? '● Tampil di Web' : '○ Disembunyikan'}
+                                                </button>
+                                                <span className="text-[11px] font-mono font-bold text-slate-400">
+                                                    {exp.period || '-'}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="font-display font-extrabold text-slate-900 text-base leading-snug">
+                                                {exp.title}
+                                            </h3>
+                                            <p className="text-xs font-mono text-neutral-600 font-semibold mt-1 flex items-center gap-1.5">
+                                                <i className="ph-bold ph-buildings text-neutral-400"></i>
+                                                {exp.company}
+                                            </p>
+                                        </div>
+
+                                        {Array.isArray(exp.points) && exp.points.length > 0 && (
+                                            <ul className="space-y-1.5 pl-4 list-disc marker:text-neutral-400 text-xs text-slate-600 font-sans leading-relaxed">
+                                                {exp.points.map((pt, pIdx) => (
+                                                    <li key={pIdx}>{pt}</li>
+                                                ))}
+                                            </ul>
+                                        )}
+
+                                        {(() => {
+                                            const tags = Array.isArray(exp.tech)
+                                                ? exp.tech
+                                                : typeof exp.tech === 'string' && exp.tech.trim()
+                                                ? exp.tech.split(',').map((s) => s.trim()).filter(Boolean)
+                                                : [];
+                                            return tags.length > 0 ? (
+                                                <div className="flex flex-wrap gap-1 pt-1">
+                                                    {tags.map((tech, idx) => (
+                                                        <span
+                                                            key={idx}
+                                                            className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-100 text-slate-700 border border-slate-200"
+                                                        >
+                                                            {tech}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            ) : null;
+                                        })()}
+                                    </div>
+
+                                    {/* Action Bar */}
+                                    <div className="flex items-center justify-between gap-2 pt-4 mt-4 border-t border-slate-100">
+                                        <div className="flex items-center gap-2">
+                                            {exp.github_url && (
+                                                <a
+                                                    href={exp.github_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors text-sm"
+                                                    title="Buka Repository GitHub"
+                                                >
+                                                    <i className="ph-bold ph-github-logo"></i>
+                                                </a>
+                                            )}
+                                            {exp.project_url && (
+                                                <a
+                                                    href={exp.project_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors text-sm"
+                                                    title="Buka Link Dokumen / Proyek"
+                                                >
+                                                    <i className="ph-bold ph-arrow-square-out"></i>
+                                                </a>
+                                            )}
+                                        </div>
+
+                                        <div className="flex items-center gap-1.5">
+                                            <button
+                                                onClick={() => onEditExperience(exp)}
+                                                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-black hover:text-white text-slate-700 flex items-center justify-center transition-colors text-sm cursor-pointer active:scale-95"
+                                                title="Edit Pengalaman Kerja & Magang"
+                                            >
+                                                <i className="ph-bold ph-pencil-simple"></i>
+                                            </button>
+                                            <button
+                                                onClick={() => onDeleteExperience(exp)}
+                                                className="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors text-sm cursor-pointer active:scale-95"
+                                                title="Hapus Pengalaman Kerja & Magang"
                                             >
                                                 <i className="ph-bold ph-trash"></i>
                                             </button>

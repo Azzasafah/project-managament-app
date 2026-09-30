@@ -41,6 +41,7 @@ class PortfolioController extends Controller
             'freelanceProjects' => $freelanceProjects,
             'certifications' => $certifications,
             'faqs' => $faqs,
+            'workExperiences' => \App\Services\WorkExperienceService::all(),
             'mascot' => \App\Services\MascotSettingService::get(),
             'user' => $adminUser ? [
                 'name' => $adminUser->name,
