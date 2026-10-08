@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Certification;
+use App\Models\Faq;
+use App\Models\FreelanceProject;
 use App\Models\KajianSchedule;
 use App\Models\LearningJournal;
 use App\Models\RefreshingActivity;
