@@ -8,8 +8,35 @@ use Illuminate\Support\Facades\Auth;
 
 class FreelanceProjectController extends Controller
 {
+    protected function cleanData(Request $request): void
+    {
+        if (!$request->filled('project_url')) {
+            $request->merge(['project_url' => null]);
+        }
+        if (!$request->filled('github_url')) {
+            $request->merge(['github_url' => null]);
+        }
+        if (!$request->filled('role_scope')) {
+            $request->merge(['role_scope' => null]);
+        }
+        if (!$request->filled('period')) {
+            $request->merge(['period' => null]);
+        }
+        if ($request->has('tech_stack')) {
+            $tech = $request->input('tech_stack');
+            if (is_string($tech)) {
+                $tech = array_values(array_filter(array_map('trim', explode(',', $tech))));
+                $request->merge(['tech_stack' => $tech]);
+            } elseif (is_array($tech)) {
+                $request->merge(['tech_stack' => array_values(array_filter(array_map('trim', $tech)))]);
+            }
+        }
+    }
+
     public function store(Request $request)
     {
+        $this->cleanData($request);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'client_name' => ['required', 'string', 'max:255'],
@@ -24,28 +51,19 @@ class FreelanceProjectController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
-        if (isset($validated['tech_stack'])) {
-            if (is_string($validated['tech_stack'])) {
-                $validated['tech_stack'] = array_values(array_filter(array_map('trim', explode(',', $validated['tech_stack']))));
-            } elseif (is_array($validated['tech_stack'])) {
-                $validated['tech_stack'] = array_values(array_filter(array_map('trim', $validated['tech_stack'])));
-            }
-        }
-
+        $validated['user_id'] = Auth::id() ?? 1;
         $validated['is_active'] = $request->boolean('is_active', true);
-        $validated['order_index'] = $request->input('order_index', 0);
+        $validated['order_index'] = (int) $request->input('order_index', 0);
         $validated['status'] = $request->input('status', 'completed');
 
-        Auth::user()->freelanceProjects()->create($validated);
+        FreelanceProject::create($validated);
 
         return redirect()->back()->with('success', 'Proyek freelance berhasil ditambahkan.');
     }
 
     public function update(Request $request, FreelanceProject $freelanceProject)
     {
-        if ($freelanceProject->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->cleanData($request);
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -61,16 +79,9 @@ class FreelanceProjectController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
-        if (isset($validated['tech_stack'])) {
-            if (is_string($validated['tech_stack'])) {
-                $validated['tech_stack'] = array_values(array_filter(array_map('trim', explode(',', $validated['tech_stack']))));
-            } elseif (is_array($validated['tech_stack'])) {
-                $validated['tech_stack'] = array_values(array_filter(array_map('trim', $validated['tech_stack'])));
-            }
-        }
-
+        $validated['user_id'] = Auth::id() ?? $freelanceProject->user_id ?? 1;
         $validated['is_active'] = $request->boolean('is_active', true);
-        $validated['order_index'] = $request->input('order_index', 0);
+        $validated['order_index'] = (int) $request->input('order_index', 0);
         $validated['status'] = $request->input('status', 'completed');
 
         $freelanceProject->update($validated);
@@ -80,10 +91,6 @@ class FreelanceProjectController extends Controller
 
     public function toggle(FreelanceProject $freelanceProject)
     {
-        if ($freelanceProject->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         $freelanceProject->update([
             'is_active' => !$freelanceProject->is_active,
         ]);
@@ -93,10 +100,6 @@ class FreelanceProjectController extends Controller
 
     public function destroy(FreelanceProject $freelanceProject)
     {
-        if ($freelanceProject->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         $freelanceProject->delete();
 
         return redirect()->back()->with('success', 'Proyek freelance berhasil dihapus.');

@@ -8,8 +8,32 @@ use Illuminate\Support\Facades\Auth;
 
 class CertificationController extends Controller
 {
+    protected function cleanData(Request $request): void
+    {
+        if (!$request->filled('credential_url')) {
+            $request->merge(['credential_url' => null]);
+        }
+        if (!$request->filled('credential_id')) {
+            $request->merge(['credential_id' => null]);
+        }
+        if (!$request->filled('issue_date')) {
+            $request->merge(['issue_date' => null]);
+        }
+        if ($request->has('skills')) {
+            $skills = $request->input('skills');
+            if (is_string($skills)) {
+                $skills = array_values(array_filter(array_map('trim', explode(',', $skills))));
+                $request->merge(['skills' => $skills]);
+            } elseif (is_array($skills)) {
+                $request->merge(['skills' => array_values(array_filter(array_map('trim', $skills)))]);
+            }
+        }
+    }
+
     public function store(Request $request)
     {
+        $this->cleanData($request);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'issuer' => ['required', 'string', 'max:255'],
@@ -23,19 +47,18 @@ class CertificationController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
+        $validated['user_id'] = Auth::id() ?? 1;
         $validated['is_active'] = $request->boolean('is_active', true);
-        $validated['order_index'] = $request->input('order_index', 0);
+        $validated['order_index'] = (int) $request->input('order_index', 0);
 
-        Auth::user()->certifications()->create($validated);
+        Certification::create($validated);
 
         return redirect()->back()->with('success', 'Kredensial sertifikasi berhasil ditambahkan.');
     }
 
     public function update(Request $request, Certification $certification)
     {
-        if ($certification->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->cleanData($request);
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -49,6 +72,9 @@ class CertificationController extends Controller
             'order_index' => ['nullable', 'integer'],
             'is_active' => ['nullable', 'boolean'],
         ]);
+
+        $validated['user_id'] = Auth::id() ?? $certification->user_id ?? 1;
+        $validated['is_active'] = $request->boolean('is_active', true);
 
         $certification->update($validated);
 
@@ -57,10 +83,6 @@ class CertificationController extends Controller
 
     public function destroy(Certification $certification)
     {
-        if ($certification->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         $certification->delete();
 
         return redirect()->back()->with('success', 'Kredensial sertifikasi berhasil dihapus.');

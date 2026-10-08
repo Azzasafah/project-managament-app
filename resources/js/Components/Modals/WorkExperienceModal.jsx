@@ -72,12 +72,12 @@ export default function WorkExperienceModal({
             title: form.title,
             company: form.company,
             period: form.period,
-            badge: form.badge,
-            tech: form.tech,
-            project_url: form.project_url || null,
-            github_url: form.github_url || null,
+            badge: form.badge || 'Experience',
+            tech: Array.isArray(form.tech) ? form.tech : [],
+            project_url: form.project_url && form.project_url.trim() ? form.project_url.trim() : null,
+            github_url: form.github_url && form.github_url.trim() ? form.github_url.trim() : null,
             points: bulletPoints,
-            is_active: form.is_active,
+            is_active: Boolean(form.is_active),
             order_index: Number(form.order_index) || 0,
         };
 

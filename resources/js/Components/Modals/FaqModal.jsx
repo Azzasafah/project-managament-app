@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 
 export default function FaqModal({ isOpen, onClose, faq = null }) {
-    const { data, setData, post, put, processing, errors, reset } = useForm({
+    const { data, setData, processing, errors, reset } = useForm({
         question: '',
         answer: '',
         category: 'General',
@@ -30,6 +30,7 @@ export default function FaqModal({ isOpen, onClose, faq = null }) {
         } else {
             reset();
             setData({
+                title: '',
                 question: '',
                 answer: '',
                 category: 'General',
@@ -44,12 +45,22 @@ export default function FaqModal({ isOpen, onClose, faq = null }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        const payload = {
+            question: data.question,
+            answer: data.answer,
+            category: data.category || 'General',
+            order_index: Number(data.order_index) || 0,
+            is_active: Boolean(data.is_active),
+        };
+
         if (faq) {
-            put(`/faqs/${faq.id}`, {
+            router.put(`/faqs/${faq.id}`, payload, {
+                preserveScroll: true,
                 onSuccess: () => onClose(),
             });
         } else {
-            post('/faqs', {
+            router.post('/faqs', payload, {
+                preserveScroll: true,
                 onSuccess: () => {
                     reset();
                     onClose();

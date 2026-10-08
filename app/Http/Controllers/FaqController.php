@@ -18,20 +18,17 @@ class FaqController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
+        $validated['user_id'] = Auth::id() ?? 1;
         $validated['is_active'] = $request->boolean('is_active', true);
-        $validated['order_index'] = $request->input('order_index', 0);
+        $validated['order_index'] = (int) $request->input('order_index', 0);
 
-        Auth::user()->faqs()->create($validated);
+        Faq::create($validated);
 
         return redirect()->back()->with('success', 'FAQ berhasil ditambahkan.');
     }
 
     public function update(Request $request, Faq $faq)
     {
-        if ($faq->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         $validated = $request->validate([
             'question' => ['required', 'string', 'max:255'],
             'answer' => ['required', 'string'],
@@ -40,6 +37,9 @@ class FaqController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
+        $validated['user_id'] = Auth::id() ?? $faq->user_id ?? 1;
+        $validated['is_active'] = $request->boolean('is_active', true);
+
         $faq->update($validated);
 
         return redirect()->back()->with('success', 'FAQ berhasil diperbarui.');
@@ -47,10 +47,6 @@ class FaqController extends Controller
 
     public function toggle(Faq $faq)
     {
-        if ($faq->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         $faq->update([
             'is_active' => !$faq->is_active,
         ]);
@@ -60,10 +56,6 @@ class FaqController extends Controller
 
     public function destroy(Faq $faq)
     {
-        if ($faq->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         $faq->delete();
 
         return redirect()->back()->with('success', 'FAQ berhasil dihapus.');

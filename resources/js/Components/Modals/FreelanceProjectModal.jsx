@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 import DynamicTagInput from '@/Components/Common/DynamicTagInput';
 
 export default function FreelanceProjectModal({ isOpen, onClose, project = null }) {
-    const { data, setData, post, put, processing, errors, reset } = useForm({
+    const { data, setData, processing, errors, reset } = useForm({
         title: '',
         client_name: '',
         role_scope: '',
@@ -66,18 +66,27 @@ export default function FreelanceProjectModal({ isOpen, onClose, project = null 
             : [];
 
         const payload = {
-            ...data,
+            title: data.title,
+            client_name: data.client_name,
+            role_scope: data.role_scope || null,
+            period: data.period || null,
             tech_stack: formattedSkills,
+            description: data.description || null,
+            project_url: data.project_url ? data.project_url.trim() : null,
+            github_url: data.github_url ? data.github_url.trim() : null,
+            status: data.status || 'completed',
+            order_index: Number(data.order_index) || 0,
+            is_active: Boolean(data.is_active),
         };
 
         if (project) {
-            put(`/freelance-projects/${project.id}`, {
-                data: payload,
+            router.put(`/freelance-projects/${project.id}`, payload, {
+                preserveScroll: true,
                 onSuccess: () => onClose(),
             });
         } else {
-            post('/freelance-projects', {
-                data: payload,
+            router.post('/freelance-projects', payload, {
+                preserveScroll: true,
                 onSuccess: () => {
                     reset();
                     onClose();

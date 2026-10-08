@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 
 export default function CertificationModal({ isOpen, onClose, certification = null }) {
-    const { data, setData, post, put, processing, errors, reset } = useForm({
+    const { data, setData, processing, errors, reset } = useForm({
         title: '',
         issuer: '',
         type: 'official',
@@ -52,25 +52,32 @@ export default function CertificationModal({ isOpen, onClose, certification = nu
         e.preventDefault();
 
         const formattedSkills = data.skills
-            ? data.skills
-                  .split(',')
-                  .map((s) => s.trim())
-                  .filter(Boolean)
+            ? (Array.isArray(data.skills)
+                ? data.skills
+                : data.skills.split(',').map((s) => s.trim()).filter(Boolean))
             : [];
 
         const payload = {
-            ...data,
+            title: data.title,
+            issuer: data.issuer,
+            type: data.type,
+            issue_date: data.issue_date || null,
+            credential_id: data.credential_id || null,
+            credential_url: data.credential_url ? data.credential_url.trim() : null,
             skills: formattedSkills,
+            description: data.description || null,
+            order_index: Number(data.order_index) || 0,
+            is_active: Boolean(data.is_active),
         };
 
         if (certification) {
-            put(`/certifications/${certification.id}`, {
-                data: payload,
+            router.put(`/certifications/${certification.id}`, payload, {
+                preserveScroll: true,
                 onSuccess: () => onClose(),
             });
         } else {
-            post('/certifications', {
-                data: payload,
+            router.post('/certifications', payload, {
+                preserveScroll: true,
                 onSuccess: () => {
                     reset();
                     onClose();

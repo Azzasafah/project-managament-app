@@ -81,9 +81,9 @@ class DashboardController extends Controller
         $refreshingActivities = RefreshingActivity::orderBy('last_done_date', 'desc')->get();
 
         // Certifications, FAQs & Freelance Projects for Portfolio Management
-        $certifications = $user->certifications()->get();
-        $faqs = $user->faqs()->get();
-        $freelanceProjects = $user->freelanceProjects()->get();
+        $certifications = Certification::orderBy('order_index', 'asc')->orderBy('id', 'desc')->get();
+        $faqs = Faq::orderBy('order_index', 'asc')->orderBy('id', 'asc')->get();
+        $freelanceProjects = FreelanceProject::orderBy('order_index', 'asc')->orderBy('id', 'desc')->get();
 
         // SafahFlow (ADE Bootcamp 36 Sesi, 5 DE Projects, Spiritual, Chores)
         $today = Carbon::today()->format('Y-m-d');
